@@ -1,0 +1,88 @@
+name: Import Commerce and Multi-Vertical Template Pack
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: import-commerce-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  import:
+    if: >-
+      ${{
+        (github.event_name == 'workflow_dispatch' && github.ref_name == 'feature/full-engine-template-upgrade') ||
+        (github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'feature/full-engine-template-upgrade')
+      }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/full-engine-template-upgrade
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Download checksum-pinned source
+        shell: bash
+        env:
+          SOURCE_URL: https://interaction-engine-source-v3.miniup.app/interaction-engine-source.tar.gz
+          SOURCE_SHA256: d8f0bca52e54d40981ee7a9a345ff04edf56f5d75ba7b418995cb2dfb2fe11e1
+        run: |
+          set -euo pipefail
+          archive=/tmp/interaction-engine-source.tar.gz
+          unpacked=/tmp/interaction-engine-source
+          rm -rf "$archive" "$unpacked"
+          mkdir -p "$unpacked"
+          curl --fail --location --silent --show-error --retry 3 --retry-all-errors "$SOURCE_URL" --output "$archive"
+          actual="$(sha256sum "$archive" | awk '{print $1}')"
+          test "$actual" = "$SOURCE_SHA256"
+          tar -tzf "$archive" >/tmp/archive-list.txt
+          tar -xzf "$archive" -C "$unpacked"
+          package_root=''
+          while IFS= read -r composer_file; do
+            candidate="$(dirname "$composer_file")"
+            if [[ -d "$candidate/src" && -d "$candidate/wizards" && -d "$candidate/templates" && -f "$candidate/bin/verify.php" ]]; then
+              package_root="$candidate"
+              break
+            fi
+          done < <(find "$unpacked" -type f -name composer.json | sort)
+          test -n "$package_root"
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/workflows/import-commerce-multi-vertical.yml' \
+            "$package_root/" ./
+
+      - name: Verify imported source
+        shell: bash
+        run: |
+          set -euo pipefail
+          php bin/verify.php
+          php_count=0
+          while IFS= read -r -d '' file; do php -l "$file" >/dev/null; php_count=$((php_count+1)); done < <(find src tests bin routes config database -type f -name '*.php' -print0 2>/dev/null)
+          json_count=0
+          while IFS= read -r -d '' file; do php -r 'json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR);' "$file"; json_count=$((json_count+1)); done < <(find wizards templates resources config reports -type f -name '*.json' -print0 2>/dev/null)
+          test "$php_count" -eq 336
+          test "$json_count" -eq 69
+          php -r '$r=json_decode(file_get_contents("reports/workcore-compatibility.json"), true, 512, JSON_THROW_ON_ERROR); exit(($r["summary"]["total_templates"] ?? 0) === 38 && ($r["summary"]["ready_templates"] ?? 0) === 29 && ($r["summary"]["draft_templates"] ?? 0) === 9 ? 0 : 1);'
+
+      - name: Commit verified source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/import-commerce-multi-vertical.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "feat: add commerce and multi-vertical template pack"
+          git push origin HEAD:feature/full-engine-template-upgrade
