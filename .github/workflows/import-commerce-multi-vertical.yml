@@ -29,7 +29,18 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - name: Detect completed import
+        id: state
+        shell: bash
+        run: |
+          if [[ -f reports/workcore-compatibility.json ]] && php -r '$r=json_decode(file_get_contents("reports/workcore-compatibility.json"), true); exit(($r["summary"]["total_templates"] ?? 0) === 38 ? 0 : 1);'; then
+            echo "complete=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "complete=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Download checksum-pinned source
+        if: steps.state.outputs.complete != 'true'
         shell: bash
         env:
           SOURCE_URL: https://interaction-engine-source-v3.miniup.app/interaction-engine-source.tar.gz
@@ -56,10 +67,11 @@ jobs:
           test -n "$package_root"
           rsync -a --delete \
             --exclude='.git/' \
-            --exclude='.github/workflows/import-commerce-multi-vertical.yml' \
+            --exclude='.github/' \
             "$package_root/" ./
 
       - name: Verify imported source
+        if: steps.state.outputs.complete != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -73,10 +85,10 @@ jobs:
           php -r '$r=json_decode(file_get_contents("reports/workcore-compatibility.json"), true, 512, JSON_THROW_ON_ERROR); exit(($r["summary"]["total_templates"] ?? 0) === 38 && ($r["summary"]["ready_templates"] ?? 0) === 29 && ($r["summary"]["draft_templates"] ?? 0) === 9 ? 0 : 1);'
 
       - name: Commit verified source
+        if: steps.state.outputs.complete != 'true'
         shell: bash
         run: |
           set -euo pipefail
-          rm -f .github/workflows/import-commerce-multi-vertical.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
