@@ -33,7 +33,7 @@ jobs:
         shell: bash
         env:
           SOURCE_URL: https://interaction-engine-source-v2.miniup.app/interaction-engine-source.tar.gz
-          SOURCE_SHA256: e02c2c5dd6b486ec72d47e2113492cf04ce0ce21ea2fa14119c1d3370cc62834
+          SOURCE_SHA256: 4437fbcd395f03014ba983ebfb702476ed945fa221edece0ca34019ad3c564eb
         run: |
           set -euo pipefail
 
