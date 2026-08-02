@@ -7,6 +7,7 @@ $commands = [
     ['PHP verification', escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($root . '/tests/run.php')],
     ['Template catalogue verification', escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($root . '/tests/template_catalogue_run.php')],
     ['Assurance workflow verification', escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($root . '/tests/assurance_workflows_run.php')],
+    ['Commerce and vertical workflow verification', escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($root . '/tests/commerce_vertical_workflows_run.php')],
 ];
 
 if (commandExists('npm')) {

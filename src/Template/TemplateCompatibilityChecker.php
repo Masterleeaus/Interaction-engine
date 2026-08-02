@@ -31,6 +31,9 @@ final readonly class TemplateCompatibilityChecker
         }
 
         $errors = [];
+        if ($template->status !== 'ready') {
+            $errors[] = "Template '{$template->id}' is not executable while status is '{$template->status}'.";
+        }
         if ($missingEntryWizard) {
             $errors[] = "Entry wizard '{$template->entryWizard}' is not registered.";
         } else {
@@ -45,7 +48,7 @@ final readonly class TemplateCompatibilityChecker
 
         return new TemplateCompatibilityReport(
             templateId: $template->id,
-            compatible: !$missingEntryWizard && $missingCapabilities === [] && $errors === [],
+            compatible: $template->status === 'ready' && !$missingEntryWizard && $missingCapabilities === [] && $errors === [],
             missingEntryWizard: $missingEntryWizard,
             missingCapabilities: $missingCapabilities,
             errors: $errors,

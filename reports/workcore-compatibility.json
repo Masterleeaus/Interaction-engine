@@ -1,17 +1,121 @@
 {
-  "schema_version": "1.0.0",
-  "generated_for": "Titan Zero Interaction Engine template foundation",
+  "schema_version": "1.1.0",
+  "generated_for": "Titan Zero Interaction Engine commerce and multi-vertical template pack",
   "meaning": {
     "engine_ready": "The template definition, entry wizard and package-level tests are complete.",
     "package_handler_registered": "The package has a default CapabilityRegistry mapping for every required capability.",
     "connected_host_verified": "A real WorkCore host adapter, permissions, migrations and command execution path have been tested."
   },
   "connected_host": "not_tested",
+  "summary": {
+    "total_templates": 38,
+    "ready_templates": 29,
+    "draft_templates": 9,
+    "connected_host_verified_templates": 0
+  },
   "templates": [
+    {
+      "id": "abandoned-checkout-recovery",
+      "version": "1.0.0",
+      "status": "draft",
+      "category": "commerce",
+      "verticals": [
+        "ecommerce"
+      ],
+      "entry_wizard": "abandoned_checkout_recovery_v1",
+      "required_capabilities": [
+        "commerce.checkout.recover"
+      ],
+      "engine_ready": false,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "template is draft",
+        "entry wizard and/or WorkCore capabilities are incomplete"
+      ]
+    },
+    {
+      "id": "booking-intake",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "hospitality",
+      "verticals": [
+        "hospitality",
+        "events",
+        "venues"
+      ],
+      "entry_wizard": "booking_intake_v1",
+      "required_capabilities": [
+        "hospitality.bookings.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "client-intake-consent",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "care",
+      "verticals": [
+        "healthcare",
+        "allied_health",
+        "aged_care",
+        "disability_services"
+      ],
+      "entry_wizard": "client_intake_consent_v1",
+      "required_capabilities": [
+        "care.clients.intake"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "clinical-service-incident-escalation",
+      "version": "1.0.0",
+      "status": "draft",
+      "category": "care",
+      "verticals": [
+        "healthcare",
+        "allied_health",
+        "aged_care",
+        "disability_services"
+      ],
+      "entry_wizard": "clinical_service_incident_escalation_v1",
+      "required_capabilities": [
+        "care.incidents.escalate"
+      ],
+      "engine_ready": false,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "template is draft",
+        "entry wizard and/or WorkCore capabilities are incomplete"
+      ]
+    },
     {
       "id": "customer-onboarding",
       "version": "1.0.0",
       "status": "ready",
+      "category": "crm",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
       "entry_wizard": "new_customer_v1",
       "required_capabilities": [
         "crm.customer.create"
@@ -25,100 +129,48 @@
       ]
     },
     {
-      "id": "quote-builder",
+      "id": "customer-order-capture",
       "version": "1.0.0",
       "status": "ready",
-      "entry_wizard": "create_quote_v1",
-      "required_capabilities": [
-        "quotes.create"
+      "category": "commerce",
+      "verticals": [
+        "ecommerce",
+        "retail",
+        "wholesale"
       ],
-      "engine_ready": true,
-      "package_handler_registered": true,
-      "connected_host_verified": false,
-      "activation_allowed": false,
-      "blocking_reasons": [
-        "connected WorkCore host verification is incomplete"
-      ]
-    },
-    {
-      "id": "job-creation",
-      "version": "1.0.0",
-      "status": "ready",
-      "entry_wizard": "create_job_v1",
+      "entry_wizard": "customer_order_capture_v1",
       "required_capabilities": [
-        "jobs.create"
-      ],
-      "engine_ready": true,
-      "package_handler_registered": true,
-      "connected_host_verified": false,
-      "activation_allowed": false,
-      "blocking_reasons": [
-        "connected WorkCore host verification is incomplete"
-      ]
-    },
-    {
-      "id": "job-completion",
-      "version": "1.0.0",
-      "status": "ready",
-      "entry_wizard": "complete_job_v1",
-      "required_capabilities": [
-        "jobs.complete"
-      ],
-      "engine_ready": true,
-      "package_handler_registered": true,
-      "connected_host_verified": false,
-      "activation_allowed": false,
-      "blocking_reasons": [
-        "connected WorkCore host verification is incomplete"
-      ]
-    },
-    {
-      "id": "invoice-creation",
-      "version": "1.0.0",
-      "status": "ready",
-      "entry_wizard": "create_invoice_v1",
-      "required_capabilities": [
-        "finance.invoice.create"
-      ],
-      "engine_ready": true,
-      "package_handler_registered": true,
-      "connected_host_verified": false,
-      "activation_allowed": false,
-      "blocking_reasons": [
-        "connected WorkCore host verification is incomplete"
-      ]
-    },
-    {
-      "id": "incident-response",
-      "version": "1.0.0",
-      "status": "ready",
-      "entry_wizard": "incident_response_v1",
-      "required_capabilities": [
-        "assurance.incidents.report"
+        "commerce.orders.create"
       ],
       "engine_ready": true,
       "package_handler_registered": false,
       "connected_host_verified": false,
       "activation_allowed": false,
       "blocking_reasons": [
-        "WorkCore assurance adapter capability is not registered",
+        "WorkCore host capability is not registered",
         "connected WorkCore host verification is incomplete"
       ]
     },
     {
-      "id": "inspection-corrective-action",
+      "id": "event-function-setup",
       "version": "1.0.0",
       "status": "ready",
-      "entry_wizard": "inspection_corrective_action_v1",
+      "category": "hospitality",
+      "verticals": [
+        "hospitality",
+        "events",
+        "venues"
+      ],
+      "entry_wizard": "event_function_setup_v1",
       "required_capabilities": [
-        "assurance.inspections.complete"
+        "hospitality.events.prepare"
       ],
       "engine_ready": true,
       "package_handler_registered": false,
       "connected_host_verified": false,
       "activation_allowed": false,
       "blocking_reasons": [
-        "WorkCore assurance adapter capability is not registered",
+        "WorkCore host capability is not registered",
         "connected WorkCore host verification is incomplete"
       ]
     },
@@ -126,6 +178,12 @@
       "id": "field-job-handover",
       "version": "0.1.0",
       "status": "draft",
+      "category": "operations",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
       "entry_wizard": "field_job_handover_v1",
       "required_capabilities": [
         "jobs.handover.create",
@@ -141,9 +199,289 @@
       ]
     },
     {
+      "id": "guest-issue-resolution",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "hospitality",
+      "verticals": [
+        "hospitality",
+        "events",
+        "venues"
+      ],
+      "entry_wizard": "guest_issue_resolution_v1",
+      "required_capabilities": [
+        "hospitality.guest_issues.resolve"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "incident-response",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "assurance",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
+      "entry_wizard": "incident_response_v1",
+      "required_capabilities": [
+        "assurance.incidents.report"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "inspection-corrective-action",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "assurance",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
+      "entry_wizard": "inspection_corrective_action_v1",
+      "required_capabilities": [
+        "assurance.inspections.complete"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "inventory-adjustment",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "inventory",
+      "verticals": [
+        "ecommerce",
+        "retail",
+        "wholesale",
+        "field_services"
+      ],
+      "entry_wizard": "inventory_adjustment_v1",
+      "required_capabilities": [
+        "inventory.adjustments.record"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "invoice-creation",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "finance",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
+      "entry_wizard": "create_invoice_v1",
+      "required_capabilities": [
+        "finance.invoice.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": true,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "job-completion",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "operations",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
+      "entry_wizard": "complete_job_v1",
+      "required_capabilities": [
+        "jobs.complete"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": true,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "job-creation",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "operations",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
+      "entry_wizard": "create_job_v1",
+      "required_capabilities": [
+        "jobs.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": true,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "job-variation-approval",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "field_services",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
+      "entry_wizard": "job_variation_approval_v1",
+      "required_capabilities": [
+        "field_services.job_variations.approve"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "maintenance-request",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "property",
+      "verticals": [
+        "property_management",
+        "facilities",
+        "real_estate"
+      ],
+      "entry_wizard": "maintenance_request_v1",
+      "required_capabilities": [
+        "property.maintenance.request"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "materials-request",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "construction",
+      "verticals": [
+        "trades",
+        "construction",
+        "field_services"
+      ],
+      "entry_wizard": "materials_request_v1",
+      "required_capabilities": [
+        "construction.materials.request"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "order-fulfilment",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "commerce",
+      "verticals": [
+        "ecommerce",
+        "retail",
+        "wholesale"
+      ],
+      "entry_wizard": "order_fulfilment_v1",
+      "required_capabilities": [
+        "commerce.orders.fulfil"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "order-issue-resolution",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "commerce",
+      "verticals": [
+        "ecommerce",
+        "retail",
+        "wholesale"
+      ],
+      "entry_wizard": "order_issue_resolution_v1",
+      "required_capabilities": [
+        "commerce.orders.resolve_issue"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
       "id": "payment-reconciliation",
       "version": "0.1.0",
       "status": "draft",
+      "category": "finance",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
       "entry_wizard": "payment_reconciliation_v1",
       "required_capabilities": [
         "finance.payment.reconcile"
@@ -158,13 +496,385 @@
       ]
     },
     {
+      "id": "practical-completion-defects",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "construction",
+      "verticals": [
+        "trades",
+        "construction"
+      ],
+      "entry_wizard": "practical_completion_defects_v1",
+      "required_capabilities": [
+        "construction.practical_completion.record"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "product-catalogue-item",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "commerce",
+      "verticals": [
+        "ecommerce",
+        "retail",
+        "wholesale"
+      ],
+      "entry_wizard": "product_catalogue_item_v1",
+      "required_capabilities": [
+        "commerce.products.upsert"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "property-onboarding",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "property",
+      "verticals": [
+        "property_management",
+        "facilities",
+        "real_estate"
+      ],
+      "entry_wizard": "property_onboarding_v1",
+      "required_capabilities": [
+        "property.assets.onboard"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "property-turnover-handover",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "property",
+      "verticals": [
+        "property_management",
+        "short_stay",
+        "facilities"
+      ],
+      "entry_wizard": "property_turnover_handover_v1",
+      "required_capabilities": [
+        "property.turnovers.complete"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "quote-builder",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "sales",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
+      "entry_wizard": "create_quote_v1",
+      "required_capabilities": [
+        "quotes.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": true,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "recurring-service-agreement",
+      "version": "1.0.0",
+      "status": "draft",
+      "category": "field_services",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
+      "entry_wizard": "recurring_service_agreement_v1",
+      "required_capabilities": [
+        "field_services.recurring_agreements.create"
+      ],
+      "engine_ready": false,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "template is draft",
+        "entry wizard and/or WorkCore capabilities are incomplete"
+      ]
+    },
+    {
+      "id": "refund-approval",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "commerce",
+      "verticals": [
+        "ecommerce",
+        "retail",
+        "wholesale"
+      ],
+      "entry_wizard": "refund_approval_v1",
+      "required_capabilities": [
+        "commerce.refunds.approve"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "return-request",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "commerce",
+      "verticals": [
+        "ecommerce",
+        "retail",
+        "wholesale"
+      ],
+      "entry_wizard": "return_request_v1",
+      "required_capabilities": [
+        "commerce.returns.request"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "service-booking",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "field_services",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
+      "entry_wizard": "service_booking_v1",
+      "required_capabilities": [
+        "field_services.bookings.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "service-plan-review",
+      "version": "1.0.0",
+      "status": "draft",
+      "category": "care",
+      "verticals": [
+        "healthcare",
+        "allied_health",
+        "aged_care",
+        "disability_services"
+      ],
+      "entry_wizard": "service_plan_review_v1",
+      "required_capabilities": [
+        "care.service_plans.review"
+      ],
+      "engine_ready": false,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "template is draft",
+        "entry wizard and/or WorkCore capabilities are incomplete"
+      ]
+    },
+    {
+      "id": "site-variation",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "construction",
+      "verticals": [
+        "trades",
+        "construction"
+      ],
+      "entry_wizard": "site_variation_v1",
+      "required_capabilities": [
+        "construction.site_variations.approve"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
       "id": "staff-onboarding",
       "version": "0.1.0",
       "status": "draft",
+      "category": "workforce",
+      "verticals": [
+        "field_services",
+        "home_services",
+        "cleaning"
+      ],
       "entry_wizard": "staff_onboarding_v1",
       "required_capabilities": [
         "workforce.staff.onboard",
         "training.assign"
+      ],
+      "engine_ready": false,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "template is draft",
+        "entry wizard and/or WorkCore capabilities are incomplete"
+      ]
+    },
+    {
+      "id": "stocktake-variance",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "inventory",
+      "verticals": [
+        "ecommerce",
+        "retail",
+        "wholesale"
+      ],
+      "entry_wizard": "stocktake_variance_v1",
+      "required_capabilities": [
+        "inventory.stocktakes.complete"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "store-stock-transfer",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "inventory",
+      "verticals": [
+        "retail",
+        "wholesale",
+        "ecommerce"
+      ],
+      "entry_wizard": "store_stock_transfer_v1",
+      "required_capabilities": [
+        "inventory.transfers.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "supplier-receiving-discrepancy",
+      "version": "1.0.0",
+      "status": "ready",
+      "category": "inventory",
+      "verticals": [
+        "retail",
+        "wholesale",
+        "ecommerce",
+        "construction"
+      ],
+      "entry_wizard": "supplier_receiving_discrepancy_v1",
+      "required_capabilities": [
+        "inventory.receipts.record"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore host capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "supplier-replenishment",
+      "version": "1.0.0",
+      "status": "draft",
+      "category": "procurement",
+      "verticals": [
+        "ecommerce",
+        "retail",
+        "wholesale"
+      ],
+      "entry_wizard": "supplier_replenishment_v1",
+      "required_capabilities": [
+        "procurement.replenishment.request"
+      ],
+      "engine_ready": false,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "template is draft",
+        "entry wizard and/or WorkCore capabilities are incomplete"
+      ]
+    },
+    {
+      "id": "wholesale-order",
+      "version": "1.0.0",
+      "status": "draft",
+      "category": "wholesale",
+      "verticals": [
+        "wholesale",
+        "distribution"
+      ],
+      "entry_wizard": "wholesale_order_v1",
+      "required_capabilities": [
+        "wholesale.orders.create"
       ],
       "engine_ready": false,
       "package_handler_registered": false,

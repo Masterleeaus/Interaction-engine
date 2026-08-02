@@ -5,8 +5,8 @@ A Laravel/Nwidart-compatible execution module that merges the Phase 8 Interactio
 ## What is included
 
 - **Universal wizard runtime**: definition registry, step validation, state, conditional navigation, guidance, renderers, command mapping and resumable sessions.
-- **Seven executable business wizards**: New Customer, Create Quote, Create Job, Complete Job, Create Invoice, Incident Response and Inspection/Corrective Action.
-- **Versioned template catalogue**: seven ready templates, three explicit drafts, semantic versions, lifecycle status, governance metadata and fail-closed WorkCore compatibility reporting.
+- **29 ready templates with executable wizards**: five foundation workflows, two assurance workflows, eight commerce/inventory workflows and fourteen multi-vertical operational workflows.
+- **Versioned template catalogue**: 29 ready templates, 9 explicit drafts, semantic versions, vertical metadata, governance rules and fail-closed WorkCore compatibility reporting.
 - **WorkCore boundary**: capability registry and adapter mappings for customers, quotes, jobs, job completion, invoices and payments.
 - **Local intelligence**: deterministic intent/entity extraction, decision trees, behavioural memory, temporal reasoning, prediction, adaptive weighting, sync deltas and hybrid reasoning.
 - **Device offline companion**: TypeScript IndexedDB storage, AES-256-GCM encrypted command outbox and sync client.
@@ -146,6 +146,7 @@ Or run each layer separately:
 php tests/run.php
 php tests/template_catalogue_run.php
 php tests/assurance_workflows_run.php
+php tests/commerce_vertical_workflows_run.php
 npm test
 ```
 
@@ -195,3 +196,22 @@ Incident Response and Inspection/Corrective Action now have executable, offline-
 Package-level readiness is separate from host activation. The assurance capabilities are intentionally not registered against an invented WorkCore implementation. Review [`docs/ASSURANCE_WORKFLOWS.md`](docs/ASSURANCE_WORKFLOWS.md) and [`reports/workcore-compatibility.json`](reports/workcore-compatibility.json) before connecting live persistence.
 
 Template discovery is available through the authenticated API and `php artisan interaction:templates`.
+
+## Commerce and multi-vertical template pack
+
+The catalogue now includes 28 additional templates for e-commerce, inventory, field services, property and facilities, trades and construction, healthcare and allied health, hospitality and events, retail and wholesale. Twenty-two are engine-ready with real entry wizards; six remain explicit drafts because their production execution depends on missing procurement, messaging, recurring billing/scheduling, regulated care, or wholesale credit/pricing host integrations.
+
+Representative governed workflows include:
+
+- High-value refund approval with evidence and human approval.
+- Inventory write-offs and material stocktake variances with evidence and approval.
+- Return requests with replay-safe tenant, device, correlation and idempotency lineage.
+- Customer-approved job and site variations.
+- Property maintenance, turnover and handover.
+- Practical completion and defect rectification.
+- Explicit client intake consent.
+- Event readiness and guest issue resolution.
+- Store transfers and supplier receiving discrepancies.
+
+Every ready template requires trusted tenant, actor, device and correlation context. Draft templates remain non-executable even if a host accidentally advertises their future capability. WorkCore remains the only operational mutation authority. See [`docs/COMMERCE_MULTI_VERTICAL_TEMPLATE_PACK.md`](docs/COMMERCE_MULTI_VERTICAL_TEMPLATE_PACK.md) and [`reports/workcore-compatibility.json`](reports/workcore-compatibility.json).
+
