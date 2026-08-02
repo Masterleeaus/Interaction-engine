@@ -1,0 +1,50 @@
+name: Verify Interaction Engine
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - feature/full-engine-template-upgrade
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Run complete engine verification
+        shell: bash
+        run: php bin/verify.php
+
+      - name: Lint PHP and validate JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          php_files=()
+          while IFS= read -r -d '' file; do
+            php_files+=("$file")
+          done < <(find src tests bin routes config database -type f -name '*.php' -print0 2>/dev/null)
+          for file in "${php_files[@]}"; do
+            php -l "$file" >/dev/null
+          done
+          echo "PHP syntax valid: ${#php_files[@]} files"
+
+          json_files=()
+          while IFS= read -r -d '' file; do
+            json_files+=("$file")
+          done < <(find wizards templates resources config reports -type f -name '*.json' -print0 2>/dev/null)
+          for file in "${json_files[@]}"; do
+            php -r 'json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR);' "$file"
+          done
+          echo "JSON valid: ${#json_files[@]} files"
