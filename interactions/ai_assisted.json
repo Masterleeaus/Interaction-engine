@@ -1,0 +1,43 @@
+{
+  "id": "ai_assisted",
+  "version": "1.0.0",
+  "name": "AI-Assisted Quote",
+  "description": "Generate a quote with AI assistance",
+  "category": "quotes",
+  "type": "wizard",
+  "capability": "quotes.create",
+  "permissions": ["quotes.create"],
+  "sections": [
+    {
+      "id": "customer",
+      "title": "Customer",
+      "questions": [
+        {
+          "key": "customer_id",
+          "question": "Which customer?",
+          "response_type": "select",
+          "options_source": "customers",
+          "validation": {"required": true},
+          "handling": "lookup"
+        }
+      ]
+    },
+    {
+      "id": "services",
+      "title": "Services",
+      "questions": [
+        {
+          "key": "services",
+          "question": "Select services to quote",
+          "response_type": "multi_select",
+          "options_source": "services",
+          "validation": {"required": true},
+          "handling": "ai",
+          "metadata": {
+            "compute": "['Cleaning', 'Maintenance']"
+          }
+        }
+      ]
+    }
+  ]
+}

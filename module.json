@@ -1,0 +1,15 @@
+{
+  "name": "InteractionEngine",
+  "alias": "interaction",
+  "version": "10.0.0",
+  "description": "Titan Zero universal interaction, wizard and local-intelligence engine",
+  "keywords": ["titan-zero", "interaction", "wizard", "offline-first", "local-intelligence", "workcore"],
+  "active": 1,
+  "order": 1,
+  "providers": [
+    "TitanZero\\Interaction\\Providers\\InteractionServiceProvider"
+  ],
+  "aliases": {
+    "Interaction": "TitanZero\\Interaction\\Facades\\Interaction"
+  }
+}

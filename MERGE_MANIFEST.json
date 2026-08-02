@@ -1,0 +1,62 @@
+{
+  "build": {
+    "name": "Titan Zero Interaction Engine Cumulative Phase 10 Local Intelligence",
+    "version": "10.0.0",
+    "built_at": "2026-07-29T07:12:08+10:00",
+    "strategy": "Phase 9 cumulative base; Phase 8 verified as a complete path subset; patch artifacts canonicalised; document requirements implemented as new wizard, local-intelligence and offline components."
+  },
+  "sources": [
+    {
+      "filename": "InteractionEngine_Wizard_Cumulative_Merged_Phase8(3).zip",
+      "sha256": "1e01f33d605fa5fb40d3a52774a163039b6078f5b59e341e7dec6f1d399a2b4f",
+      "file_count": 127
+    },
+    {
+      "filename": "InteractionEngine_Wizard_Cumulative_Merged_Phase9_80_Core_Engines(1).zip",
+      "sha256": "b7febf32f42e49f69a8ee67c2a946a3d124fc3b9798aa98f9b2f9b0de3ffe713",
+      "file_count": 289
+    },
+    {
+      "filename": "Titan Local Intelligence(1).docx",
+      "sha256": "adcac5026a0abb199d4799c347b25b4b22f90ae90fdd1401e38b5dfd4986aa4e"
+    }
+  ],
+  "comparison": {
+    "phase8_file_count": 127,
+    "phase9_file_count": 289,
+    "phase8_only_paths": 0,
+    "phase9_additional_paths": 162,
+    "shared_modified_paths": [
+      "composer.json",
+      "src/Providers/InteractionServiceProvider.php"
+    ]
+  },
+  "output_inventory": {
+    "total_files": 356,
+    "php_files": 301,
+    "typescript_source_files": 9,
+    "json_files": 13,
+    "wizard_definitions": 5,
+    "engine_contracts": 80,
+    "engine_implementations": 80
+  },
+  "verification": {
+    "php_tests": "16/16 passed",
+    "typescript_tests": "3/3 passed",
+    "php_recursive_syntax_lint": "passed",
+    "json_validation": "passed",
+    "yaml_validation": "passed",
+    "clean_extract_verification": "passed (PHP 16/16, TypeScript 3/3, JSON/YAML valid)"
+  },
+  "key_additions": [
+    "Universal Wizard Engine",
+    "Five foundation business wizards",
+    "Cache-backed wizard sessions",
+    "LocalBrain deterministic intelligence stack",
+    "IndexedDB/AES-256-GCM TypeScript offline companion",
+    "Idempotent offline sync API",
+    "WorkCore job-completion capability",
+    "Executable operational commands and health checks",
+    "OpenAPI 3.1 specification"
+  ]
+}

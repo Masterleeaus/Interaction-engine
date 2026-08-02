@@ -1,0 +1,13 @@
+{
+  "file_count": 389,
+  "id": "titan-interaction-engine",
+  "name": "Titan Zero Interaction Engine",
+  "production_activation": "requires-host-mapping",
+  "provider": "TitanZero\\Interaction\\Providers\\InteractionServiceProvider",
+  "requires": [
+    "workcore/shared-foundation"
+  ],
+  "status": "extracted",
+  "type": "laravel-module",
+  "version": "1.0.0-extracted.1"
+}

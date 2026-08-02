@@ -1,0 +1,12 @@
+{
+  "name": "@titanzero/interaction-engine-offline",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Device-side offline companion for the Titan Zero Interaction Engine",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test tests/ts/*.test.js",
+    "verify": "npm test"
+  }
+}

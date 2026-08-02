@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0.0",
+  "generated_for": "Titan Zero Interaction Engine template foundation",
+  "meaning": {
+    "engine_ready": "The template definition, entry wizard and package-level tests are complete.",
+    "package_handler_registered": "The package has a default CapabilityRegistry mapping for every required capability.",
+    "connected_host_verified": "A real WorkCore host adapter, permissions, migrations and command execution path have been tested."
+  },
+  "connected_host": "not_tested",
+  "templates": [
+    {
+      "id": "customer-onboarding",
+      "version": "1.0.0",
+      "status": "ready",
+      "entry_wizard": "new_customer_v1",
+      "required_capabilities": [
+        "crm.customer.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": true,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "quote-builder",
+      "version": "1.0.0",
+      "status": "ready",
+      "entry_wizard": "create_quote_v1",
+      "required_capabilities": [
+        "quotes.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": true,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "job-creation",
+      "version": "1.0.0",
+      "status": "ready",
+      "entry_wizard": "create_job_v1",
+      "required_capabilities": [
+        "jobs.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": true,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "job-completion",
+      "version": "1.0.0",
+      "status": "ready",
+      "entry_wizard": "complete_job_v1",
+      "required_capabilities": [
+        "jobs.complete"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": true,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "invoice-creation",
+      "version": "1.0.0",
+      "status": "ready",
+      "entry_wizard": "create_invoice_v1",
+      "required_capabilities": [
+        "finance.invoice.create"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": true,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "incident-response",
+      "version": "1.0.0",
+      "status": "ready",
+      "entry_wizard": "incident_response_v1",
+      "required_capabilities": [
+        "assurance.incidents.report"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore assurance adapter capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "inspection-corrective-action",
+      "version": "1.0.0",
+      "status": "ready",
+      "entry_wizard": "inspection_corrective_action_v1",
+      "required_capabilities": [
+        "assurance.inspections.complete"
+      ],
+      "engine_ready": true,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "WorkCore assurance adapter capability is not registered",
+        "connected WorkCore host verification is incomplete"
+      ]
+    },
+    {
+      "id": "field-job-handover",
+      "version": "0.1.0",
+      "status": "draft",
+      "entry_wizard": "field_job_handover_v1",
+      "required_capabilities": [
+        "jobs.handover.create",
+        "evidence.attach"
+      ],
+      "engine_ready": false,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "template is draft",
+        "entry wizard and/or WorkCore capabilities are incomplete"
+      ]
+    },
+    {
+      "id": "payment-reconciliation",
+      "version": "0.1.0",
+      "status": "draft",
+      "entry_wizard": "payment_reconciliation_v1",
+      "required_capabilities": [
+        "finance.payment.reconcile"
+      ],
+      "engine_ready": false,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "template is draft",
+        "entry wizard and/or WorkCore capabilities are incomplete"
+      ]
+    },
+    {
+      "id": "staff-onboarding",
+      "version": "0.1.0",
+      "status": "draft",
+      "entry_wizard": "staff_onboarding_v1",
+      "required_capabilities": [
+        "workforce.staff.onboard",
+        "training.assign"
+      ],
+      "engine_ready": false,
+      "package_handler_registered": false,
+      "connected_host_verified": false,
+      "activation_allowed": false,
+      "blocking_reasons": [
+        "template is draft",
+        "entry wizard and/or WorkCore capabilities are incomplete"
+      ]
+    }
+  ]
+}
