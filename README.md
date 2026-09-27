@@ -1,104 +1,197 @@
-# Titan Zero Interaction Engine — Cumulative Phase 10
+# Titan Zero Interaction Engine
 
-A Laravel/Nwidart-compatible execution module that merges the Phase 8 Interaction Engine with the Phase 9 **80 Core Engines** library and adds the document-defined **Universal Wizard Engine** and **Local Intelligence** foundation.
+> **A governed interaction runtime that turns conversation, context and intent into adaptive workflows and authorised business actions — online or offline.**
 
-## What is included
+Titan Zero Interaction Engine is the interaction and workflow execution layer for intelligent business systems. It connects chat, voice, mobile, desktop and API experiences to structured workflows, local intelligence, business capabilities and policy-controlled execution.
 
-- **Universal wizard runtime**: definition registry, step validation, state, conditional navigation, guidance, renderers, command mapping and resumable sessions.
-- **29 ready templates with executable wizards**: five foundation workflows, two assurance workflows, eight commerce/inventory workflows and fourteen multi-vertical operational workflows.
-- **Versioned template catalogue**: 29 ready templates, 9 explicit drafts, semantic versions, vertical metadata, governance rules and fail-closed WorkCore compatibility reporting.
-- **WorkCore boundary**: capability registry and adapter mappings for customers, quotes, jobs, job completion, invoices and payments.
-- **Local intelligence**: deterministic intent/entity extraction, decision trees, behavioural memory, temporal reasoning, prediction, adaptive weighting, sync deltas and hybrid reasoning.
-- **Device offline companion**: TypeScript IndexedDB storage, AES-256-GCM encrypted command outbox and sync client.
-- **80-engine library**: 80 contracts and 80 matching implementations across eight domains, registered as Laravel singletons.
-- **Compatibility runtime**: the original `interactions/` compiler/runtime remains available while new work moves to the canonical `wizards/` runtime.
+The engine is designed around a simple boundary: **understanding what a user wants is not the same as having authority to act.** Interaction, reasoning, recommendation, approval and execution remain distinct stages so intelligent interfaces can become more capable without silently becoming more powerful.
 
-## Architecture
+## What it does
+
+The engine combines five major layers:
 
 ```text
-Chat / Mobile / Tablet / Desktop / Voice / API
+Chat / Voice / Mobile / Tablet / Desktop / API
                          |
-               Universal Wizard Engine
- Registry -> Validation -> State -> Guidance -> Renderer
+                         v
+                Interaction Runtime
                          |
-            Capability + WorkCore Command
-                  /                 \
-          Online dispatch       Offline outbox
-              WorkCore       IndexedDB + AES-GCM
+                         v
+              Universal Wizard Engine
+      Registry / Validation / State / Guidance / UI
                          |
-                 Local Intelligence
-       Perception / Memory / Reasoning / Planning / Learning
+                         v
+                  Local Intelligence
+   Intent / Entities / Memory / Prediction / Reasoning
                          |
-                  80 Core Engines
+                         v
+             Capability + Authority Layer
+      Policy / Approval / Evidence / Command Mapping
+                         |
+                 +-------+-------+
+                 |               |
+                 v               v
+          Online execution   Offline outbox
+          Business systems   Encrypted device state
+                 |               |
+                 +-------+-------+
+                         v
+                Outcomes + Evidence
 ```
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for boundaries and data flow.
+## Universal Wizard Engine
 
-## Requirements
+The Universal Wizard Engine converts schema-defined business processes into resumable, governed interactions.
 
-- PHP 8.2+
-- Laravel 10, 11 or 12 compatible Illuminate components
-- PHP Sodium extension
-- Node.js 20+ and TypeScript when rebuilding the device companion
-- A configured WorkCore service/model boundary for live writes
+It provides:
 
-Cloud AI is optional. Local deterministic operation does not require an API key.
+- definition and template registries;
+- step validation;
+- persistent session state;
+- conditional navigation;
+- contextual guidance;
+- renderer contracts;
+- command mapping;
+- resumable sessions;
+- offline continuation;
+- capability-aware execution.
 
-## Installation
+A workflow can therefore move between conversational and structured interaction without losing its state, policy context or execution boundary.
 
-Install this directory as a local Composer package/module, then run:
+## Adaptive workflow catalogue
 
-```bash
-composer install
-composer dump-autoload
-php artisan vendor:publish --tag=interaction-config
-php artisan vendor:publish --tag=interaction-definitions
-php artisan migrate
+The repository contains a versioned catalogue of executable workflow templates spanning multiple operational domains, including:
+
+- field services;
+- commerce and inventory;
+- property and facilities;
+- trades and construction;
+- healthcare and allied health;
+- hospitality and events;
+- retail and wholesale;
+- assurance and corrective-action workflows.
+
+Templates carry lifecycle metadata, governance rules, compatibility requirements and readiness state. Workflows whose required host capabilities are unavailable remain explicit drafts rather than pretending to be executable.
+
+Representative governed workflows include high-value refund approval, inventory write-offs, stocktake variances, customer-approved job variations, property maintenance, practical completion, defect rectification, intake consent, event readiness, store transfers and supplier receiving discrepancies.
+
+## Local Intelligence
+
+Interaction Engine includes a local intelligence layer capable of operating without a cloud model.
+
+Its deterministic and hybrid foundations include:
+
+- intent extraction;
+- entity extraction;
+- decision trees;
+- behavioural memory;
+- temporal reasoning;
+- prediction;
+- adaptive weighting;
+- planning primitives;
+- synchronisation deltas;
+- hybrid local/cloud reasoning paths.
+
+Cloud intelligence is optional. The system can continue interpreting and progressing supported workflows locally when external model access is unavailable or undesirable.
+
+## Cognitive event ledger
+
+The engine records the evidence chain between intelligence and real outcomes:
+
+```text
+observation
+    ↓
+recommendation / prediction
+    ↓
+user decision
+    ↓
+command
+    ↓
+outcome
+    ↓
+prediction score
 ```
 
-For a Nwidart module deployment, place the package under the host application's module directory and enable `InteractionEngine` using the host module workflow.
+Cognitive events are immutable, tenant-scoped and idempotent. Recommendations are not treated as confirmed behaviour until a real user action, executed command or observed outcome provides evidence.
 
-### Environment
+This gives the system a foundation for learning from outcomes without confusing model inference with fact.
 
-```dotenv
-INTERACTION_OFFLINE_ENABLED=true
-INTERACTION_LOCAL_INTELLIGENCE=true
-INTERACTION_LOCAL_MIN_CONFIDENCE=0.65
-INTERACTION_WIZARD_SESSION_TTL=86400
-INTERACTION_OUTBOX_SECRET=${APP_KEY}
-INTERACTION_AI_ENABLED=false
-```
+## Authority and execution controls
 
-Enable cloud AI only after installing `openai-php/client` and configuring a key:
+Every executable capability requires an explicit `CapabilityPolicy`.
 
-```dotenv
-INTERACTION_AI_ENABLED=true
-INTERACTION_AI_API_KEY=your-key
-INTERACTION_AI_MODEL=gpt-4o-mini
-```
+Unregistered capabilities fail closed. Policies can distinguish between operations that may execute automatically, operations requiring approval and operations reserved for humans.
 
-## WorkCore configuration
+The same authority controls apply to online commands and replayed offline commands.
 
-The adapter accepts either callable services, service classes or model classes. Configure the host application's `config/interaction.php`:
+Key controls include:
 
-```php
-'adapter_config' => [
-    'services' => [
-        'customer' => App\WorkCore\Customers\CreateCustomer::class,
-        'quote' => App\WorkCore\Quotes\CreateQuote::class,
-        'job' => App\WorkCore\Jobs\CreateJob::class,
-        'job_completion' => App\WorkCore\Jobs\CompleteJob::class,
-        'invoice' => App\WorkCore\Finance\CreateInvoice::class,
-        'payment' => App\WorkCore\Finance\RecordPayment::class,
-    ],
-],
-```
+- explicit capability registration;
+- human-only operations;
+- approval-required commands;
+- tenant and actor validation;
+- device identity;
+- evidence requirements;
+- correlation and idempotency lineage;
+- policy-protected command dispatch;
+- cross-tenant rejection.
 
-A service class may expose `create()` or `handle()`. The job-completion service may expose `complete()`, `handle()` or `update()`.
+The result is progressive automation without treating autonomy as an all-or-nothing switch.
 
-## API surfaces
+## Offline-first device companion
 
-All routes use `api` and `auth:sanctum` middleware under `/api/interaction`.
+The TypeScript device companion allows supported workflows to continue without continuous network access.
+
+Core components include:
+
+- `IndexedDbStore`
+- `WizardDraftStore`
+- `EncryptedCommandOutbox`
+- `OfflineSyncClient`
+- `LocalLanguageEngine`
+
+Queued commands preserve tenant, user and device context inside AES-256-GCM encrypted envelopes. Unsynchronised records are retained until successfully reconciled rather than being silently discarded.
+
+Offline replay passes through the same capability policies used by online execution.
+
+## 80-engine capability library
+
+The runtime includes 80 engine contracts with matching implementations across eight capability domains.
+
+These engines provide reusable deterministic building blocks beneath higher-level workflows and intelligence. They are registered through Laravel's service container and can be composed without forcing every business interaction through a remote language model.
+
+## Business-system boundary
+
+Interaction Engine does not bypass the host application's business logic.
+
+A capability registry and adapter layer map approved interaction commands onto host services for operations such as:
+
+- customers;
+- quotes;
+- jobs;
+- job completion;
+- invoices;
+- payments.
+
+The host business system remains the operational mutation authority. Interaction Engine determines how a workflow is understood, progressed and governed; the configured business capability determines how an approved operation is performed.
+
+## Security model
+
+Security defaults are intentionally conservative:
+
+- cloud AI is disabled by default;
+- offline commands require tenant and device identity;
+- device commands use AES-256-GCM encryption;
+- local PHP command envelopes use XChaCha20-Poly1305 with integrity protection;
+- executable capabilities require policy registration;
+- online and replayed commands share authority controls;
+- authenticated tenant context overrides untrusted request tenant data;
+- cross-tenant session and command access is rejected;
+- idempotency protects replayed commands from duplicate execution.
+
+## API
+
+Authenticated interaction APIs are exposed under `/api/interaction`.
 
 ```text
 GET  /templates
@@ -111,36 +204,75 @@ POST /local-intelligence/process
 POST /offline-commands
 ```
 
-The offline-command endpoint uses the command UUID as a 30-day idempotency key, validates tenant/device metadata and dispatches through the same policy-protected WorkCore command bus.
+The complete contract is defined in `resources/openapi.yaml`.
 
-The complete API contract is in [`resources/openapi.yaml`](resources/openapi.yaml).
+## Architecture
 
-## Device offline companion
+The repository is structured around distinct concerns rather than one monolithic interaction controller:
 
-The TypeScript package is under `resources/ts/offline` and has no third-party runtime dependencies.
-
-```bash
-npm run build
-npm test
+```text
+Interaction Engine
+├── interactions/        Compatibility interaction runtime
+├── wizards/             Canonical executable workflow definitions
+├── templates/           Versioned governed workflow catalogue
+├── resources/ts/offline Device-side offline runtime
+├── resources/openapi    API contract
+├── tests/               Runtime and workflow verification
+├── docs/                Architecture and integration documentation
+└── reports/             Capability and compatibility evidence
 ```
 
-Core classes:
+New operational workflows are defined through the canonical wizard runtime while the compatibility interaction runtime allows older definitions to migrate incrementally.
 
-- `IndexedDbStore`
-- `WizardDraftStore`
-- `EncryptedCommandOutbox`
-- `OfflineSyncClient`
-- `LocalLanguageEngine`
+## Technology
 
-Every queued command carries tenant, user and device identifiers inside an AES-256-GCM encrypted envelope. Unsynchronised records are never removed automatically.
+- PHP 8.2+
+- Laravel-compatible Illuminate components
+- Nwidart module integration
+- TypeScript
+- IndexedDB
+- PHP Sodium
+- AES-256-GCM
+- XChaCha20-Poly1305
+- OpenAPI
+- JSON/schema-driven workflow definitions
+
+Laravel 10, 11 and 12 compatible components are supported by the module architecture.
+
+## Installation
+
+```bash
+composer install
+composer dump-autoload
+php artisan vendor:publish --tag=interaction-config
+php artisan vendor:publish --tag=interaction-definitions
+php artisan migrate
+```
+
+For Nwidart deployments, install the package under the host application's module structure and enable `InteractionEngine` using the host module workflow.
+
+### Core configuration
+
+```dotenv
+INTERACTION_OFFLINE_ENABLED=true
+INTERACTION_LOCAL_INTELLIGENCE=true
+INTERACTION_LOCAL_MIN_CONFIDENCE=0.65
+INTERACTION_WIZARD_SESSION_TTL=86400
+INTERACTION_OUTBOX_SECRET=${APP_KEY}
+INTERACTION_AI_ENABLED=false
+```
+
+Cloud reasoning can be enabled separately when required; it is not a prerequisite for local deterministic operation.
 
 ## Verification
+
+Run the repository verification suite:
 
 ```bash
 php bin/verify.php
 ```
 
-Or run each layer separately:
+Individual layers can also be exercised independently:
 
 ```bash
 php tests/run.php
@@ -150,68 +282,22 @@ php tests/commerce_vertical_workflows_run.php
 npm test
 ```
 
-The verification suite checks PHP syntax, canonical filenames, all 80 engine pairs, JSON definitions, schema validation, offline and online wizard execution, session restoration, local intelligence, WorkCore mappings and device-side encryption.
+Verification covers PHP syntax, canonical engine pairs, workflow definitions, schema validation, online and offline execution, session restoration, local intelligence, host mappings and device-side encryption.
 
-## Definition directories
+## Design principles
 
-- `templates/`: versioned, governed workflow packages and lifecycle metadata.
-- `wizards/`: canonical schema-defined Universal Wizard definitions.
-- `interactions/`: compatibility definitions for the original Interaction Runtime.
+**Interaction is continuous.** Conversation, UI state and workflow state belong to the same operating context.
 
-New business actions should be added to `wizards/`. Existing `interactions/` definitions can be migrated incrementally without breaking older routes.
+**Intelligence is not authority.** A recommendation or prediction never grants itself permission to execute.
 
-## Security defaults
+**Offline is a runtime state, not a failure mode.** Supported workflows retain state and queue governed actions until connectivity returns.
 
-- Cloud AI is disabled by default.
-- Offline commands require tenant and device identity.
-- Device commands are encrypted with AES-256-GCM.
-- PHP-local command envelopes use XChaCha20-Poly1305 and HMAC integrity.
-- Online and resynchronised commands pass through capability policies.
-- The API rejects cross-tenant offline commands when the authenticated user's tenant is known.
+**Evidence precedes learning.** Recommendations become behavioural evidence only after actual decisions or outcomes confirm them.
 
-## Honest readiness boundary
+**Host systems remain authoritative.** The engine integrates with operational capabilities rather than silently replacing their business rules.
 
-This archive is an executable, tested **foundation module**, not proof of production deployment inside a particular MagicAI/WorkCore installation. The exact host models, permissions, authentication, queues and service classes must be mapped and integration-tested in the target Laravel application. Several of the 80 engines are deterministic baseline implementations rather than trained ML models or a local LLM.
+**Cloud intelligence is optional.** Local deterministic capability remains useful without external model access.
 
-## Phase 11 cognitive event ledger
+## Status
 
-Phase 11 adds the evidence chain required for outcome-based intelligence:
-
-```text
-observation → recommendation/prediction → user decision → command → outcome → prediction score
-```
-
-Cognitive events are immutable, tenant scoped and idempotent. Device events are encrypted before storage and replayed by correlation ID and sequence. Recommendations are never treated as confirmed user behaviour until a user action, command execution or real outcome confirms them.
-
-See `CHANGELOG_PHASE11_COGNITIVE_EVENTS.md` for the migration and API details.
-
-## Phase 14 authority controls
-All executable capabilities now require an explicit `CapabilityPolicy`; unregistered capabilities fail closed. Human-only and approval-required commands are enforced at the command bus, including offline replay. Configure `INTERACTION_APPROVAL_SECRET` with a dedicated server-side secret before production use.
-
-
-## Assurance template upgrade
-
-Incident Response and Inspection/Corrective Action now have executable, offline-capable wizards with fail-closed evidence and approval governance. Authenticated tenant identity overrides request tenant data, and wizard sessions cannot be read or advanced by another tenant or actor.
-
-Package-level readiness is separate from host activation. The assurance capabilities are intentionally not registered against an invented WorkCore implementation. Review [`docs/ASSURANCE_WORKFLOWS.md`](docs/ASSURANCE_WORKFLOWS.md) and [`reports/workcore-compatibility.json`](reports/workcore-compatibility.json) before connecting live persistence.
-
-Template discovery is available through the authenticated API and `php artisan interaction:templates`.
-
-## Commerce and multi-vertical template pack
-
-The catalogue now includes 28 additional templates for e-commerce, inventory, field services, property and facilities, trades and construction, healthcare and allied health, hospitality and events, retail and wholesale. Twenty-two are engine-ready with real entry wizards; six remain explicit drafts because their production execution depends on missing procurement, messaging, recurring billing/scheduling, regulated care, or wholesale credit/pricing host integrations.
-
-Representative governed workflows include:
-
-- High-value refund approval with evidence and human approval.
-- Inventory write-offs and material stocktake variances with evidence and approval.
-- Return requests with replay-safe tenant, device, correlation and idempotency lineage.
-- Customer-approved job and site variations.
-- Property maintenance, turnover and handover.
-- Practical completion and defect rectification.
-- Explicit client intake consent.
-- Event readiness and guest issue resolution.
-- Store transfers and supplier receiving discrepancies.
-
-Every ready template requires trusted tenant, actor, device and correlation context. Draft templates remain non-executable even if a host accidentally advertises their future capability. WorkCore remains the only operational mutation authority. See [`docs/COMMERCE_MULTI_VERTICAL_TEMPLATE_PACK.md`](docs/COMMERCE_MULTI_VERTICAL_TEMPLATE_PACK.md) and [`reports/workcore-compatibility.json`](reports/workcore-compatibility.json).
-
+Titan Zero Interaction Engine is an executable, tested foundation for adaptive, governed business interaction. Host-specific models, authentication, queues, permissions and service mappings must be integration-tested for each deployment, and deterministic baseline engines should not be confused with trained ML models.
