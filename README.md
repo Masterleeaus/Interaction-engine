@@ -106,4 +106,5 @@ The Composer package declares a proprietary license. Obtain the appropriate righ
 
 ## Banner
 
-No verified wide banner asset was found in this repository; the centered typographic title is used until one is added.
+A checked-in project-specific banner is displayed above.
+
