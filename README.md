@@ -8,6 +8,13 @@
 
 </div>
 
+## Product architecture and engineering highlights
+
+A governed interaction runtime that turns chat, voice, mobile, desktop, and API requests into authorized, traceable business workflows.
+
+- **Architecture:** Schema-driven wizards and versioned workflow catalogues feed local/hybrid intelligence, tenant-scoped context, capability policies, idempotent execution, and an IndexedDB-based offline companion.
+- **Distinctive engineering:** The key boundary is explicit: understanding and recommending do not confer authority. Approval, execution, evidence, and verification are separate stages.
+
 > **Status: module foundation with recorded standalone verification; host deployment readiness remains environment-specific.** The repository includes a cumulative build report and verification scripts. Its report explicitly lists host tenancy, permissions, queues, database compatibility, PWA integration, provider integration, and production-load testing as remaining destination-system checks.
 
 ## What it provides
