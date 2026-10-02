@@ -1,3 +1,5 @@
+![Titan Interaction Runtime — GOVERNED WORKFLOWS · ONLINE + OFFLINE](docs/images/portfolio-banner.svg)
+
 <div align="center">
 
 # Titan Zero Interaction Engine
