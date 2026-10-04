@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="860" viewBox="0 0 1500 860" role="img" aria-labelledby="title desc">
+  <title id="title">Titan Zero Interaction Engine architecture</title>
+  <desc id="desc">Chat, voice, mobile, desktop, and API inputs enter the interaction runtime, pass through versioned wizards, local or hybrid intelligence, and policy-controlled execution, then reach an online host or IndexedDB offline outbox before producing outcomes and evidence.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101827"/><stop offset="1" stop-color="#2d356f"/></linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#9fe7ff"/><stop offset="1" stop-color="#d5b5ff"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5L0 10" fill="#a6e8ff"/></marker>
+    <style>
+      .eyebrow{font:700 13px Segoe UI,Arial,sans-serif;letter-spacing:2.2px;fill:#a8e4ff}.title{font:700 32px Segoe UI,Arial,sans-serif;fill:#f7f8ff}.sub{font:400 15px Segoe UI,Arial,sans-serif;fill:#d4d9f1}.section{font:700 12px Segoe UI,Arial,sans-serif;letter-spacing:1.7px;fill:#b7c0ed}.node{fill:#252b58;stroke:#6c79bd;stroke-width:1.5}.strong{fill:#3e3c7b;stroke:#d5b5ff;stroke-width:2}.online{fill:#22466a;stroke:#9fe7ff;stroke-width:2}.offline{fill:#394162;stroke:#d5b5ff;stroke-width:2}.label{font:700 16px Segoe UI,Arial,sans-serif;fill:#f8f9ff}.body{font:400 13px Segoe UI,Arial,sans-serif;fill:#d0d6ed}.tiny{font:400 12px Segoe UI,Arial,sans-serif;fill:#adb9da}.route{stroke:url(#flow);stroke-width:3;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1500" height="860" rx="26" fill="url(#bg)"/>
+  <text x="64" y="58" class="eyebrow">TITAN ZERO INTERACTION ENGINE � RUNTIME MAP</text><text x="64" y="106" class="title">Adaptive workflows with explicit authority boundaries</text><text x="64" y="136" class="sub">Source-backed from src/Wizard, src/Offline, src/Policy, src/Authority, and src/Runtime.</text>
+  <text x="70" y="190" class="section">INPUT SURFACES</text>
+  <g><rect x="70" y="210" width="160" height="62" rx="12" class="node"/><text x="150" y="238" text-anchor="middle" class="label">Chat � Voice</text><text x="150" y="258" text-anchor="middle" class="tiny">intent + context</text><rect x="70" y="292" width="160" height="62" rx="12" class="node"/><text x="150" y="320" text-anchor="middle" class="label">Mobile � Desktop</text><text x="150" y="340" text-anchor="middle" class="tiny">surface events</text><rect x="70" y="374" width="160" height="62" rx="12" class="node"/><text x="150" y="402" text-anchor="middle" class="label">API</text><text x="150" y="422" text-anchor="middle" class="tiny">contract requests</text></g>
+  <path d="M230 323H320" class="route"/>
+  <rect x="320" y="230" width="230" height="186" rx="16" class="strong"/><text x="435" y="275" text-anchor="middle" class="label">Interaction Runtime</text><text x="435" y="305" text-anchor="middle" class="body">session + context</text><text x="435" y="329" text-anchor="middle" class="body">capability negotiation</text><text x="435" y="353" text-anchor="middle" class="body">idempotency + lineage</text><text x="435" y="385" text-anchor="middle" class="tiny">src/Runtime/InteractionRuntime</text>
+  <path d="M550 323H640" class="route"/>
+  <rect x="640" y="230" width="230" height="186" rx="16" class="node"/><text x="755" y="275" text-anchor="middle" class="label">Wizard + Templates</text><text x="755" y="305" text-anchor="middle" class="body">versioned definitions</text><text x="755" y="329" text-anchor="middle" class="body">resumable sessions</text><text x="755" y="353" text-anchor="middle" class="body">conditional flows</text><text x="755" y="385" text-anchor="middle" class="tiny">src/Wizard + wizards/</text>
+  <path d="M870 323H960" class="route"/>
+  <rect x="960" y="230" width="230" height="186" rx="16" class="node"/><text x="1075" y="275" text-anchor="middle" class="label">Local / Hybrid AI</text><text x="1075" y="305" text-anchor="middle" class="body">deterministic helpers</text><text x="1075" y="329" text-anchor="middle" class="body">optional providers</text><text x="1075" y="353" text-anchor="middle" class="body">tenant-scoped events</text><text x="1075" y="385" text-anchor="middle" class="tiny">src/AI + src/LocalIntelligence</text>
+  <path d="M1190 323H1280" class="route"/>
+  <rect x="1280" y="230" width="160" height="186" rx="16" class="strong"/><text x="1360" y="275" text-anchor="middle" class="label">Policy</text><text x="1360" y="305" text-anchor="middle" class="body">actor context</text><text x="1360" y="329" text-anchor="middle" class="body">capability gate</text><text x="1360" y="353" text-anchor="middle" class="body">fail closed</text><text x="1360" y="385" text-anchor="middle" class="tiny">src/Policy + Authority</text>
+  <text x="420" y="510" class="section">EXECUTION PATHS</text>
+  <path d="M1360 416V560H570" class="route"/><path d="M1360 416V560H1030" class="route"/>
+  <rect x="350" y="580" width="440" height="120" rx="16" class="online"/><text x="570" y="620" text-anchor="middle" class="label">Online host</text><text x="570" y="648" text-anchor="middle" class="body">governed business mutation � host remains authority</text><text x="570" y="674" text-anchor="middle" class="tiny">routes/ � resources/openapi.yaml</text>
+  <rect x="810" y="580" width="440" height="120" rx="16" class="offline"/><text x="1030" y="620" text-anchor="middle" class="label">IndexedDB offline outbox</text><text x="1030" y="648" text-anchor="middle" class="body">encrypted command envelope � retry + conflict resolution</text><text x="1030" y="674" text-anchor="middle" class="tiny">src/Offline � SyncEngine � ConflictResolver</text>
+  <path d="M570 700V760H1030V700" class="route"/>
+  <rect x="470" y="760" width="660" height="64" rx="14" class="node"/><text x="800" y="788" text-anchor="middle" class="label">Outcomes + evidence lineage</text><text x="800" y="808" text-anchor="middle" class="tiny">approval, execution, verification, and recovery remain distinct</text>
+</svg>
+
