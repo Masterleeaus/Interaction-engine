@@ -22,6 +22,16 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install offline companion toolchain
+        shell: bash
+        run: npm ci
+
       - name: Run complete engine verification
         shell: bash
         run: php bin/verify.php
@@ -48,3 +58,4 @@ jobs:
             php -r 'json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR);' "$file"
           done
           echo "JSON valid: ${#json_files[@]} files"
+
