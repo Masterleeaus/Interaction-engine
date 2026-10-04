@@ -51,6 +51,12 @@ The 31-case policy result currently linked from the README is historical evidenc
 
 Legal provenance is also unresolved on current `main`: the root `LICENSE` path is absent, and GitHub reports no repository license. The README's proprietary-license statement remains the only checked-in guidance. This audit does not invent an MIT or other license; PR #6 proposes a license change and should be resolved by its owner before any legal claim is published. Preserve existing attribution and history until that choice is merged.
 
+## Tracked configuration and secret scan
+
+The repository currently has no tracked `.env` or `.env.*` files; `.gitignore` excludes runtime environment files while allowing future redacted `.env.example` templates. The new `scripts/no-secrets-check.php` scans Git-tracked text files and reports only path, line, and rule identifiers—never matched values. It rejects private-key markers, common provider/GitHub/AWS token formats, and credential-like assignments.
+
+The sole allowlisted match is the deterministic evaluator fixture `interaction-policy-eval-secret-2026` in `scripts/authority-policy-eval.php`; it is not a runtime credential and is matched by exact path and literal. The [tracked secret hygiene workflow](../.github/workflows/no-secrets.yml) runs the check on pull requests and pushes to `main`. Branch-protection required status is not asserted here and must be verified separately before relying on it as a merge gate.
+
 ## Recommended next work
 
 Implement each no-op method only with its owning contract's intended semantics and a focused test. Until then, keep the methods visible as compatibility scaffolds and keep portfolio language at the deterministic baseline level recorded in [AI_ENGINEERING.md](AI_ENGINEERING.md).
