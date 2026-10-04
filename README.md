@@ -74,7 +74,7 @@ The local-language component is a deterministic **rule-based intent parser**. It
 
 The repository contains 80 engine contracts with matching implementations across executive, cognitive, memory, learning, planning, human interaction, AI infrastructure, and business intelligence. [`docs/ENGINE_LIBRARY_80.md`](docs/ENGINE_LIBRARY_80.md) lists each as `Implemented` or `Partial` with behavior and limits. `Implemented` means the declared operations have executable behavior within the described boundary, not production validation for every host or industry. Heuristics, in-memory stores, and host-schema integrations are labeled accordingly; no engine is listed as interface only.
 
-## Product workflows and template catalogue
+## Template discovery
 
 The catalogue has 38 definitions: 29 ready templates and nine drafts. Ready templates reference registered entry wizards and declared capabilities; drafts remain non-executable. The authenticated Laravel catalogue is available at `GET /templates`.
 
