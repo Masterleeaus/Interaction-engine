@@ -112,10 +112,11 @@ foreach ($scenarioDocument['cases'] as $case) {
                 ? max((int) ($case['approval_ttl_seconds'] ?? 900) + 1, (int) ($approvalCase['issue_ttl_seconds'] ?? 901))
                 : (int) ($approvalCase['issue_ttl_seconds'] ?? 300);
 
+            $approvedBy = (string) ($approvalCase['approved_by'] ?? 'manager-1');
             $approval = $signer->issueForPayload(
                 capability: $approvalCapability,
                 tenantId: $approvalTenant,
-                approvedBy: (string) ($approvalCase['approved_by'] ?? 'manager-1'),
+                approvedBy: trim($approvedBy) === '' ? 'evaluation-placeholder' : $approvedBy,
                 approverRoles: (array) ($approvalCase['roles'] ?? ['manager']),
                 payload: $payload,
                 ttlSeconds: $approvalTtl,
@@ -126,6 +127,9 @@ foreach ($scenarioDocument['cases'] as $case) {
                 $approval = $signGrant($approval);
             } elseif ($mode === 'tampered') {
                 $approval['approver_roles'] = ['owner'];
+            } elseif (trim($approvedBy) === '') {
+                $approval['approved_by'] = '';
+                $approval = $signGrant($approval);
             }
 
             $payload['_approval'] = $approval;

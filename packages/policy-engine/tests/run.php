@@ -43,6 +43,23 @@ $test('unknown capabilities fail closed', static function () use ($assert): void
     $assert(!$gate->decide('unknown.action', [])->allowed, 'Unknown action was allowed.');
 });
 
+$test('approval signer refuses missing capability, tenant, or approver identity', static function () use ($assert, $secret): void {
+    $signer = new ApprovalSigner($secret);
+    foreach ([
+        ['', 'tenant-a', 'user-1'],
+        ['quotes.create', '', 'user-1'],
+        ['quotes.create', 'tenant-a', ''],
+    ] as [$capability, $tenant, $approver]) {
+        $thrown = false;
+        try {
+            $signer->issue($capability, $tenant, $approver, ['manager']);
+        } catch (InvalidArgumentException) {
+            $thrown = true;
+        }
+        $assert($thrown, 'Signer issued an approval without complete identity scope.');
+    }
+});
+
 $test('non-executable authority levels deny execution', static function () use ($assert): void {
     foreach ([AuthorityLevel::ObserveOnly, AuthorityLevel::RecommendOnly, AuthorityLevel::PrepareOnly] as $level) {
         $gate = new PolicyEngine();

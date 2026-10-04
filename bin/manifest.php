@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 $root = dirname(__DIR__);
 $manifestPath = $root . '/files.sha256.json';
+$generatedComposerLockPath = $root . '/composer.lock';
 $excludedDirectories = ['.git', 'node_modules', 'vendor', 'dist', 'coverage', '__pycache__'];
 $files = [];
 
 $directory = new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS);
-$filter = new RecursiveCallbackFilterIterator($directory, static function (SplFileInfo $current) use ($excludedDirectories, $manifestPath): bool {
+$filter = new RecursiveCallbackFilterIterator($directory, static function (SplFileInfo $current) use ($excludedDirectories, $manifestPath, $generatedComposerLockPath): bool {
     if ($current->isDir()) {
         return !in_array($current->getFilename(), $excludedDirectories, true);
     }
-    return $current->getRealPath() !== realpath($manifestPath);
+    // This library intentionally has no Composer lockfile. CI's `composer
+    // install` creates one transiently when resolving the declared ranges.
+    return $current->getRealPath() !== realpath($manifestPath)
+        && $current->getPathname() !== $generatedComposerLockPath;
 });
 
 foreach (new RecursiveIteratorIterator($filter) as $file) {
