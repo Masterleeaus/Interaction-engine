@@ -1,4 +1,4 @@
-![Titan Interaction Runtime - GOVERNED WORKFLOWS � ONLINE + OFFLINE](docs/images/portfolio-banner.svg)
+![Titan Interaction Runtime — GOVERNED WORKFLOWS · ONLINE + OFFLINE](docs/images/portfolio-banner.svg)
 
 <div align="center">
 
@@ -104,11 +104,11 @@ The host business system remains the authority for operational mutations.
 
 ## Repository map
 
-- `interactions/`, `wizards/`, `templates/` - interaction and workflow definitions
-- `resources/ts/` - device-side offline companion
-- `resources/openapi.yaml` - API contract
-- `tests/` - runtime and workflow checks
-- `docs/`, `reports/` - architecture and verification evidence
+- `interactions/`, `wizards/`, `templates/` — interaction and workflow definitions
+- `resources/ts/` — device-side offline companion
+- `resources/openapi.yaml` — API contract
+- `tests/` — runtime and workflow checks
+- `docs/`, `reports/` — architecture and verification evidence
 
 The AI and agent-oriented implementation map is in [`docs/AI_ENGINEERING.md`](docs/AI_ENGINEERING.md). It distinguishes deterministic heuristics, optional cloud-model integration, policy enforcement and host-boundary work from claims the repository does not make.
 
