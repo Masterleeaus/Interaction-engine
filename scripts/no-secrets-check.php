@@ -39,7 +39,7 @@ foreach ($trackedFiles as $relativePath) {
 
     foreach ($rules as $rule => $pattern) {
         $matches = [];
-        if (preg_match_all($pattern, $contents, $matches, PREG_OFFSET_CAPTURE) !== 1) {
+        if (preg_match_all($pattern, $contents, $matches, PREG_OFFSET_CAPTURE) === false || $matches[0] === []) {
             continue;
         }
 
