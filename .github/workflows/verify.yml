@@ -3,9 +3,6 @@ name: Verify Interaction Engine
 on:
   pull_request:
   push:
-    branches:
-      - main
-      - feature/full-engine-template-upgrade
   workflow_dispatch:
 
 permissions:
@@ -22,40 +19,63 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v4
 
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: xdebug
+          tools: composer:v2
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '24'
           cache: npm
 
-      - name: Install offline companion toolchain
-        shell: bash
+      - name: Validate Composer package metadata
+        run: composer validate --no-check-publish
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Install locked JavaScript dependencies
         run: npm ci
 
-      - name: Run complete engine verification
-        shell: bash
-        run: php bin/verify.php
+      - name: Verify maintained-file SHA-256 manifest
+        run: php bin/manifest.php
 
-      - name: Lint PHP and validate JSON
+      - name: Run complete PHP and TypeScript verification
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p coverage
+          php bin/verify.php | tee coverage/verification.txt
 
-          php_files=()
-          while IFS= read -r -d '' file; do
-            php_files+=("$file")
-          done < <(find src tests bin routes config database -type f -name '*.php' -print0 2>/dev/null)
-          for file in "${php_files[@]}"; do
-            php -l "$file" >/dev/null
-          done
-          echo "PHP syntax valid: ${#php_files[@]} files"
+      - name: Generate PHP coverage report
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p coverage
+          PHP_COVERAGE_OUTPUT=coverage/php.json php -dauto_prepend_file=tests/coverage-bootstrap.php tests/run.php | tee coverage/php-tests.txt
+          test -s coverage/php.json
+          PHP_COVERAGE_OUTPUT=coverage/policy-php.json php -dauto_prepend_file=tests/coverage-bootstrap.php packages/policy-engine/tests/run.php | tee coverage/policy-php-tests.txt
+          test -s coverage/policy-php.json
 
-          json_files=()
-          while IFS= read -r -d '' file; do
-            json_files+=("$file")
-          done < <(find wizards templates resources config reports -type f -name '*.json' -print0 2>/dev/null)
-          for file in "${json_files[@]}"; do
-            php -r 'json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR);' "$file"
-          done
-          echo "JSON valid: ${#json_files[@]} files"
+      - name: Run 100-case authority evaluation
+        run: php bin/authority-eval.php coverage/authority-evaluation.json > coverage/authority-evaluation.stdout
 
+      - name: Run measured benchmarks
+        shell: bash
+        run: |
+          set -euo pipefail
+          php bin/benchmark.php coverage/performance-php.json > coverage/performance-php.stdout
+          npm run benchmark:offline -- coverage/performance-typescript.json > coverage/performance-typescript.stdout
+
+      - name: Store test, coverage, evaluation, and benchmark reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: interaction-engine-evidence
+          path: coverage/
+          if-no-files-found: warn
+          retention-days: 30

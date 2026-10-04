@@ -18,6 +18,9 @@ class GoalEngine implements GoalEngineInterface
 
     public function setGoal(string $name, string $description, array $targets = []): void
     {
+        if (trim($name) === '' || trim($description) === '') {
+            throw new \InvalidArgumentException('Goal name and description are required.');
+        }
         $this->goals[$name] = [
             'name' => $name,
             'description' => $description,
@@ -30,8 +33,11 @@ class GoalEngine implements GoalEngineInterface
 
     public function updateProgress(string $name, float $progress): void
     {
+        if (!is_finite($progress)) {
+            throw new \InvalidArgumentException('Goal progress must be a finite percentage.');
+        }
         if (isset($this->goals[$name])) {
-            $this->goals[$name]['progress'] = min($progress, 100);
+            $this->goals[$name]['progress'] = max(0.0, min($progress, 100.0));
             if ($this->goals[$name]['progress'] >= 100) {
                 $this->goals[$name]['status'] = 'completed';
             }

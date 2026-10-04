@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace TitanZero\Interaction\LocalIntelligence\Language;
 
+/**
+ * Deterministic, rule-based business intent parser. It performs no model inference;
+ * callers should treat its confidence as a routing hint, never as authorization.
+ */
 final class LocalLanguageEngine
 {
     private array $intentPatterns = [

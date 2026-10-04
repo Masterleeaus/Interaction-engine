@@ -94,7 +94,7 @@ $test('all twenty two new ready templates have executable wizards and matching c
     }
 });
 
-$test('high value refund fails closed without approval and queues after approval', function () use ($makeEngine, $submit, $context, $assert): void {
+$test('high value refund records browser approval claims only as evidence', function () use ($makeEngine, $submit, $context, $assert): void {
     [, $outbox, $engine] = $makeEngine();
     $steps = [
         ['order_id' => 'order-4102', 'return_id' => 'return-88', 'customer_id' => 'customer-22'],
@@ -129,7 +129,8 @@ $test('negative inventory adjustment requires evidence and approval', function (
     $steps[3] = ['approval_id' => 'approval-stock-1', 'approved_by' => 'manager-2', 'approved_at' => '2026-08-03T03:21:00+10:00', 'declaration_accepted' => true];
     $passed = $submit($engine, $engine->start('inventory_adjustment_v1', $context), $steps);
     $assert($passed->complete, 'Governed inventory write-off did not complete.');
-    $assert(($passed->command['payload']['_approval']['id'] ?? null) === 'approval-stock-1', 'Approval envelope missing from write-off command.');
+    $assert(!isset($passed->command['payload']['_approval']), 'Browser-entered fields must never become a signed approval grant.');
+    $assert(($passed->command['payload']['_approval_evidence']['approval_id'] ?? null) === 'approval-stock-1', 'Browser-entered approval details should remain reviewable evidence.');
 });
 
 $test('material stocktake variance requires evidence and approval', function () use ($makeEngine, $submit, $context, $assert): void {

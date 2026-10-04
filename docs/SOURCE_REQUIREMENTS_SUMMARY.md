@@ -1,6 +1,6 @@
 # Titan Local Intelligence Requirements Trace
 
-This build used the supplied Titan Local Intelligence design document as the architectural source for the new Phase 10 components.
+This document maps the repository's local-intelligence capabilities to their implementation entry points and records the boundaries that need a host adapter or a trained model.
 
 ## Universal Wizard requirements implemented
 

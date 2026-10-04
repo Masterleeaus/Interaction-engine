@@ -2,7 +2,7 @@
   "name": "titanzero/interaction-engine",
   "description": "Titan Zero universal interaction, wizard and local-intelligence engine for Laravel and WorkCore",
   "type": "laravel-module",
-  "license": "proprietary",
+  "license": "MIT",
   "require": {
     "php": "^8.2",
     "ext-json": "*",
@@ -22,7 +22,10 @@
   },
   "autoload": {
     "psr-4": {
-      "TitanZero\\Interaction\\": "src/",
+      "TitanZero\\Interaction\\": [
+        "packages/policy-engine/src/",
+        "src/"
+      ],
       "TitanZero\\Engines\\": "src/Engines/"
     }
   },

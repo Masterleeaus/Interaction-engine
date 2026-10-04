@@ -19,8 +19,8 @@ class AnalyticsEngine implements AnalyticsEngineInterface
     {
         $results = [];
         foreach ($metrics as $name => $values) {
-            $numericName = is_int($name) ? $values : $name;
-            $data = is_int($name) ? [] : (is_array($values) ? $values : [$values]);
+            $numericName = is_int($name) ? 'series_' . $name : (string) $name;
+            $data = is_array($values) ? $values : [$values];
             $numeric = array_filter($data, 'is_numeric');
 
             $results[$numericName] = empty($numeric) ? null : [
@@ -37,6 +37,9 @@ class AnalyticsEngine implements AnalyticsEngineInterface
 
     public function trend(string $metric, int $period): array
     {
+        if (trim($metric) === '' || $period < 2) {
+            throw new \InvalidArgumentException('A metric name and a period of at least two days are required.');
+        }
         try {
             $since = now()->subDays($period);
             $mid = now()->subDays((int) ($period / 2));
@@ -67,6 +70,33 @@ class AnalyticsEngine implements AnalyticsEngineInterface
 
     public function getDashboard(): array
     {
-        return ['key_metrics' => ['revenue' => 1000, 'customers' => 50]];
+        try {
+            $rows = DB::table('interaction_events')
+                ->select('event_type')
+                ->selectRaw('COUNT(*) AS event_count')
+                ->where('occurred_at', '>=', now()->subDays(30))
+                ->groupBy('event_type')
+                ->orderByDesc('event_count')
+                ->get();
+        } catch (\Throwable $error) {
+            return [
+                'available' => false,
+                'window_days' => 30,
+                'key_metrics' => [],
+                'reason' => 'Host interaction_events schema unavailable: ' . $error->getMessage(),
+                'generated_at' => gmdate(DATE_ATOM),
+            ];
+        }
+        $metrics = [];
+        foreach ($rows as $row) {
+            $metrics[(string) $row->event_type] = (int) $row->event_count;
+        }
+        return [
+            'available' => true,
+            'window_days' => 30,
+            'event_total' => array_sum($metrics),
+            'key_metrics' => $metrics,
+            'generated_at' => gmdate(DATE_ATOM),
+        ];
     }
 }

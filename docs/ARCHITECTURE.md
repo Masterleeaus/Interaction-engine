@@ -2,9 +2,7 @@
 
 ## 1. Architectural decision
 
-Phase 9 contains every Phase 8 path and adds the 80-engine library, so Phase 9 is the cumulative filesystem base. The merge does not stack duplicate files. Updated patch artifacts were folded into canonical paths and then removed.
-
-The package preserves the original Interaction Runtime for backward compatibility and adds a new canonical Universal Wizard Runtime for new business actions.
+The module contains a compatibility interaction runtime, a schema-driven wizard runtime, a host-independent Policy Engine package, and a bounded library of 80 cooperating engine contracts and implementations.
 
 ## 2. Runtime layers
 
@@ -24,9 +22,9 @@ Chat, mobile, tablet, desktop, voice and API clients consume the same wizard def
 
 ### Command boundary
 
-`CommandMapper` generates a UUID-bearing capability command with wizard, tenant, user, device and timestamp metadata.
+`CommandMapper` generates a UUID-bearing capability command with wizard, tenant, user, device and timestamp metadata. Approval fields typed into a wizard remain untrusted evidence; only a signed grant created in trusted server context is passed to policy evaluation.
 
-Online completion dispatches through `CommandBusInterface`, where policy checks run before the `CapabilityRegistry` invokes `WorkCoreAdapter`.
+Online completion dispatches through `CommandBusInterface`, where policy checks run before the `CapabilityRegistry` invokes `WorkCoreAdapter`. Scheduled automation, tool calls, function calls, capability routing, workflows and synchronization also pass through the Policy Engine or guarded execution engine before invoking handlers.
 
 Offline devices use the TypeScript `EncryptedCommandOutbox` and later submit to the idempotent `/offline-commands` endpoint.
 
@@ -81,7 +79,7 @@ Eight domains contain ten contracts and ten implementations each:
 - AI Infrastructure
 - Business Intelligence
 
-All matching pairs are registered as Laravel singletons. Critical reasoning, retrieval, vector search, prediction, recommendation, planning, compliance and knowledge functions have deterministic implementations. Other engines remain replaceable baseline strategies behind stable contracts.
+All matching pairs have executable implementations. The Laravel provider scopes mutable engines to a request/job lifecycle and shares the three dual-interface engines through one scoped concrete binding each. The inventory labels bounded heuristics and host-specific adapters as partial instead of implying production validation.
 
 ## 6. Definition compatibility
 

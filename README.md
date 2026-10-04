@@ -4,147 +4,102 @@
 
 # Titan Zero Interaction Engine
 
-**A governed interaction runtime for adaptive workflows and authorised business actions, online or offline.**
+**A governed workflow runtime that keeps model proposals separate from authorized actions.**
 
 </div>
 
 [![Authority Policy Evaluation](https://github.com/Masterleeaus/Interaction-engine/actions/workflows/authority-policy-eval.yml/badge.svg?branch=main)](https://github.com/Masterleeaus/Interaction-engine/actions/workflows/authority-policy-eval.yml)
 
-## Product architecture and engineering highlights
+## Run a governed action in five minutes
 
-A governed interaction runtime that turns chat, voice, mobile, desktop, and API requests into authorized, traceable business workflows.
+The standalone policy package and demo need PHP 8.2. They do not need Composer, Laravel, a database, or an API key.
 
-- **Architecture:** Schema-driven wizards and versioned workflow catalogues feed local/hybrid intelligence, tenant-scoped context, capability policies, idempotent execution, and an IndexedDB-based offline companion.
-- **Distinctive engineering:** The key boundary is explicit: understanding and recommending do not confer authority. Approval, execution, evidence, and verification are separate stages.
-
-> **Status: module foundation with recorded standalone verification; host deployment readiness remains environment-specific.** The repository includes a cumulative build report and verification scripts. Its report explicitly lists host tenancy, permissions, queues, database compatibility, PWA integration, provider integration, and production-load testing as remaining destination-system checks.
-
-## What it provides
-
-The Interaction Engine connects chat, voice, mobile, desktop, and API experiences to structured workflows, local intelligence, business capabilities, and policy-controlled execution. Understanding user intent does not grant authority: recommendation, approval, and execution remain separate stages.
-
-## Core capabilities
-
-- Schema-driven Universal Wizard Engine with resumable sessions and conditional flows
-- Versioned workflow and template catalogues with readiness metadata
-- Local and hybrid intelligence components
-- Tenant-scoped cognitive events and evidence lineage
-- Capability policies, actor context, idempotency, and fail-closed execution
-- TypeScript offline companion using IndexedDB and encrypted command envelopes
-- OpenAPI contract in `resources/openapi.yaml`
-
-## Template discovery
-
-The catalogue contains 38 definitions: **29 ready templates** and nine drafts. Ready templates reference registered entry wizards and declared capabilities; drafts remain non-executable. The authenticated Laravel catalogue is available at `GET  /templates`, with template definitions discovered from `templates/`.
-
-Assurance workflows include **Incident Response** and inspection corrective action.
-
-### Commerce and multi-vertical template pack
-
-The [Commerce and multi-vertical template pack](docs/COMMERCE_MULTI_VERTICAL_TEMPLATE_PACK.md) adds reusable workflows for ordering, fulfilment, inventory, returns, refunds, and vertical-specific service operations. See `reports/workcore-compatibility.json` for engine readiness and host-connection status.
-
-## Architecture
-
-```text
-Chat / Voice / Mobile / Desktop / API
-                  |
-                  v
-        Interaction Runtime
-                  |
-                  v
-          Wizard + Templates
-                  |
-                  v
-        Local Intelligence
-                  |
-                  v
-       Policy + Capability Layer
-                  |
-          +-------+-------+
-          |               |
-          v               v
-    Online host       Offline outbox
-          |               |
-          +-------+-------+
-                  v
-          Outcomes + Evidence
+```sh
+php bin/demo.php
 ```
 
-## Technology
+The deterministic proposal is denied first. The demo then simulates a signed owner approval bound to the exact quote data, runs an in-memory draft handler, and records an audit event. That simulated approval is not proof of a real user's identity and cannot mutate a host system.
 
-- PHP 8.2+
-- Laravel-compatible Illuminate components
-- TypeScript, IndexedDB
-- PHP Sodium and AES-GCM
-- OpenAPI and JSON/schema-driven definitions
+```text
+Titan Zero Interaction Engine — governed quote demo
+Proposal: Create a $450 carpet-cleaning quote for Jenny.
+Gate before approval: DENY — A valid, scoped and unexpired human approval is required.
+Owner approval: VALID
+Execution: quote-demo-001 created as a draft for Jenny — AUD 450.00
+Audit: capability_executed recorded for quote-demo-001
+Summary: denied before approval; approved; executed once; audit entries=1
+```
 
-## Installation
+## Policy Engine
 
-The module is intended for a compatible Laravel host. Verify the host version, dependency constraints, migrations, service provider registration, auth/tenant context, queue/cache setup, and route exposure before deployment.
+The Policy Engine is the execution boundary. Intent recognition, planning, recommendation, and model proposals do not confer permission. Only a registered capability handler reached after an allowed policy decision can execute an action.
 
-```bash
+- Unknown capabilities fail closed; observe, recommend, and prepare policies cannot execute.
+- User-only actions require a human identity and roles from trusted server context, with fresh authentication when configured. The host must not copy identity claims from request or model data.
+- Delegated actors must be identified, tenant scoped, and carry every required scope.
+- Approval grants are HMAC-SHA256 signed, capability and tenant scoped, time limited, and bound to the action payload by default.
+- Numeric limits and registered domain rules run before execution.
+
+The framework independent package is in [`packages/policy-engine`](packages/policy-engine/README.md). Its `AuthorityLevel`, `CapabilityPolicy`, `ApprovalSigner`, and `PolicyEngine` classes have a focused test suite:
+
+```sh
+php packages/policy-engine/tests/run.php
+```
+
+Only trusted server-side approval code should issue grants. The host remains responsible for authenticating users, building `_context`, persisting approvals, and recording durable audit evidence.
+
+## Current 100-case authority evaluation
+
+`php bin/authority-eval.php` exercises 100 deterministic cases across approval-required, user-only, delegated, prepare-only, and unregistered capabilities. It reports unauthorized actions executed, valid actions wrongly blocked, attempts blocked, and an allow-gate-bypassed no-op baseline. The expected result is **0 unauthorized actions executed** and **0 valid actions wrongly blocked**.
+
+CI stores the JSON report with the run artifacts. A committed report for this branch will be added after the PHP workflow has executed on the implementation commit. The earlier 31-case evaluation and its exact historical results remain available in [`eval-results/authority-policy-latest.md`](eval-results/authority-policy-latest.md); those numbers apply to the commit recorded in that report, not to this branch.
+
+## Optional live model proposal
+
+The optional `openai-php/client` adapter returns structured proposal data. `OpenAIActionProposer` only accepts a caller-supplied capability allowlist and rejects authority, approval, identity, tenant, scope, and idempotency fields from model output. The proposal has no handler or policy bypass; the normal Command Bus rechecks trusted context and policy before any registered handler.
+
+```php
+$proposal = $proposer->propose($userRequest, ['quotes.create']);
+$commands->dispatch(
+    $proposal->capability,
+    $proposal->payload + ['_context' => $trustedServerContext],
+);
+```
+
+Cloud AI is disabled by default. Set `INTERACTION_AI_ENABLED=true`, `INTERACTION_AI_API_KEY`, and a high-entropy `INTERACTION_APPROVAL_SECRET` (at least 32 characters) in a trusted host environment. To make one live proposal and demonstrate its denial, install the optional SDK with `composer require openai-php/client`, then run `php bin/llm-proposal-demo.php`. It never executes the proposed action. Do not put credentials in a browser, device, or model prompt.
+
+The local-language component is a deterministic **rule-based intent parser**. It extracts supported business intents and entities; it is not a language model.
+
+## The 80-engine library
+
+The repository contains 80 engine contracts with matching implementations across executive, cognitive, memory, learning, planning, human interaction, AI infrastructure, and business intelligence. [`docs/ENGINE_LIBRARY_80.md`](docs/ENGINE_LIBRARY_80.md) lists each as `Implemented` or `Partial` with behavior and limits. `Implemented` means the declared operations have executable behavior within the described boundary, not production validation for every host or industry. Heuristics, in-memory stores, and host-schema integrations are labeled accordingly; no engine is listed as interface only.
+
+## Product workflows and template catalogue
+
+The catalogue has 38 definitions: 29 ready templates and nine drafts. Ready templates reference registered entry wizards and declared capabilities; drafts remain non-executable. The authenticated Laravel catalogue is available at `GET /templates`.
+
+The [Commerce and multi-vertical template pack](docs/COMMERCE_MULTI_VERTICAL_TEMPLATE_PACK.md) covers ordering, fulfilment, inventory, returns, refunds, and vertical-specific service workflows. Incident Response and inspection corrective action are included in the assurance workflows. Host compatibility evidence is in [`reports/workcore-compatibility.json`](reports/workcore-compatibility.json); it does not claim a connected production host.
+
+The broader implementation map in [`docs/AI_ENGINEERING.md`](docs/AI_ENGINEERING.md) distinguishes deterministic heuristics, optional cloud-model integration, policy enforcement, and host-boundary work.
+
+## Install and verify
+
+The Laravel-compatible module targets PHP 8.2+ and Illuminate 10, 11, or 12. In a compatible host checkout:
+
+```sh
 composer install
 npm ci
 php bin/verify.php
 ```
 
-`php bin/verify.php` runs the PHP suites and the TypeScript offline-companion tests. The workflow installs the declared TypeScript toolchain before invoking the same verifier, so a clean checkout does not depend on a globally installed compiler. A prior cumulative build report records historical checks; it is not a substitute for rerunning tests on the current commit or validating a destination host.
+The verifier runs the standalone policy suite, PHP runtime and workflow suites, and TypeScript tests. GitHub Actions also runs PHP coverage, TypeScript coverage, 100 authority cases, and measured benchmarks. This development sandbox does not include PHP, so PHP results are reported only after the remote workflow completes.
 
-## Integration requirements
+The TypeScript offline companion uses IndexedDB and AES-256-GCM for device-side command storage. The test suite uses a memory adapter; browser, database, authentication, and connected-host behavior still require validation in the destination application.
 
-A destination system must validate:
+## Measured performance
 
-- host-specific model and service mappings;
-- tenant and permission semantics;
-- authentication, API exposure, queues, cache, scheduler, and database migration compatibility;
-- browser/PWA integration and cloud provider configuration;
-- concurrency, load, and production failure behaviour.
+The benchmark scripts measure interaction-definition compilation, duplicate-command handling, and encrypted outbox enqueue/decrypt. Published results will include the CI commit, environment, sample count, p50, and p95; no values are estimated. See [`benchmarks/performance.md`](benchmarks/performance.md).
 
-The host business system remains the authority for operational mutations.
+## Repository hygiene, history, and license
 
-## Repository map
-
-- `interactions/`, `wizards/`, `templates/` — interaction and workflow definitions
-- `resources/ts/` — device-side offline companion
-- `resources/openapi.yaml` — API contract
-- `tests/` — runtime and workflow checks
-- `docs/`, `reports/` — architecture and verification evidence
-
-The AI and agent-oriented implementation map is in [`docs/AI_ENGINEERING.md`](docs/AI_ENGINEERING.md). It distinguishes deterministic heuristics, optional cloud-model integration, policy enforcement and host-boundary work from claims the repository does not make.
-
-## Security principles
-
-- Cloud AI is disabled by default.
-- Unregistered capabilities fail closed.
-- Tenant and actor context are required for consequential execution.
-- Offline replay uses the same policy checks as online execution.
-- Unsynchronised records remain queued until reconciliation succeeds.
-
-## Reproducible authority policy evaluation
-
-The authority policy claim is measured directly against `PolicyEngine` using 31 fixed, labelled scenarios covering unknown capabilities, non-executable authority levels, human roles and authentication freshness, signed approval scope and expiry, delegated scopes and numeric limits, and policy callbacks.
-
-| Test | Allow-all bypass control | Interaction Engine |
-| --- | ---: | ---: |
-| Blocked requests allowed through | 24 / 24 | 0 / 24 |
-| Valid requests wrongly denied | 0 / 7 | 0 / 7 |
-| Wrong-tenant approvals accepted | 1 / 1 | 0 / 1 |
-
-The baseline is a deliberately simple allow-all control, not a competing product. The evaluation tests policy decisions only; it does not cover host adapters, persistence, or downstream execution.
-
-Evaluated on **4 October 2026** with PHP 8.2.34 at commit [`bdbe73c`](https://github.com/Masterleeaus/Interaction-engine/commit/bdbe73cc445b900d29126e081bd5f2341e98ee6f). The fixed scenario corpus uses seed `20261004` and SHA-256 `a1e863c857aa05e70f720224c3f1bb0065f2f1c699fe27e438ce4a64a58ff340`. Reproduce with:
-
-```bash
-php scripts/authority-policy-eval.php
-```
-
-The [full scenario report](eval-results/authority-policy-latest.md) records all 31 outcomes; [CI run 37171514412](https://github.com/Masterleeaus/Interaction-engine/actions/runs/37171514412) passed. The initial CI attempt failed before evaluating scenarios because the evaluator resolved the repository root one directory too high; that path bug was corrected before this successful run.
-
-## License
-
-The Composer package declares a proprietary license. Obtain the appropriate rights before external distribution or reuse.
-
-## Banner
-
-A checked-in project-specific banner is displayed above.
-
+This repository is licensed under MIT. Generated `dist/` output and dependencies are build-only and ignored. The risky external tarball import workflow has been removed. Historical import notes and provenance remain on the [`archive/interaction-engine-history` branch](https://github.com/Masterleeaus/Interaction-engine/tree/archive/interaction-engine-history).

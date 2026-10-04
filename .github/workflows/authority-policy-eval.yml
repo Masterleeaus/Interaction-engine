@@ -6,6 +6,7 @@ on:
     paths:
       - 'src/Authority/**'
       - 'src/Policy/**'
+      - 'packages/policy-engine/**'
       - 'evaluations/authority-policy/**'
       - 'scripts/authority-policy-eval.php'
       - '.github/workflows/authority-policy-eval.yml'
@@ -13,6 +14,7 @@ on:
     paths:
       - 'src/Authority/**'
       - 'src/Policy/**'
+      - 'packages/policy-engine/**'
       - 'evaluations/authority-policy/**'
       - 'scripts/authority-policy-eval.php'
       - '.github/workflows/authority-policy-eval.yml'

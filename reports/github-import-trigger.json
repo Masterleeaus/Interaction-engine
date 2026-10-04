@@ -1,8 +1,0 @@
-{
-  "purpose": "Trigger independent post-import verification for the commerce and multi-vertical template pack.",
-  "imported_head": "714fc4ce283191e34fa186e236b5e9b741425f4f",
-  "source_sha256": "d8f0bca52e54d40981ee7a9a345ff04edf56f5d75ba7b418995cb2dfb2fe11e1",
-  "template_count": 38,
-  "ready_template_count": 29,
-  "draft_template_count": 9
-}

@@ -35,8 +35,8 @@ An intent or prediction never becomes permission by itself.
 | Retrieval and vectors | `src/Engines/AIInfrastructure/Implementations/{EmbeddingEngine,RetrievalEngine,VectorSearchEngine}.php` | Hash-based fixed-size vectors, token-overlap retrieval and in-memory cosine search. These are deterministic indexing baselines, not trained semantic embeddings. |
 | Evaluation and prompt support | `EvaluationEngine.php`, `PromptEngine.php`, `PromptOptimizationEngine.php` | Word-overlap scoring and rule-based prompt cleanup/scoring. These are transparent heuristics, not model-quality benchmarks. |
 | Tool/function dispatch | `ToolCallingEngine.php`, `FunctionCallingEngine.php`, `CapabilityRegistry.php` | Explicit name-to-callable registries. There is no hidden model loop or unrestricted code execution. |
-| Optional cloud AI | `src/AI/OpenAIService.php`, `src/Resolver/Resolvers/AIResolver.php` | Optional OpenAI-backed question resolution when enabled and configured. `NullAIService` fails closed when cloud AI is disabled. Cloud output does not bypass policy or command dispatch. |
-| Authority and safety | `src/Policy/PolicyEngine.php`, `src/Authority/*`, `src/Command/CommandBus.php` | Default-deny capability decisions, approval signatures, role/scope/limit checks, tenant checks and policy callbacks before execution. |
+| Optional cloud AI | `src/AI/OpenAIService.php`, `src/AI/OpenAIActionProposer.php`, `src/Resolver/Resolvers/AIResolver.php` | Optional OpenAI-backed question resolution and structured action proposals when enabled and configured. `NullAIService` is used when cloud AI is disabled. Model output does not bypass policy or command dispatch. |
+| Authority and safety | `packages/policy-engine/src/Policy/PolicyEngine.php`, `packages/policy-engine/src/Authority/*`, `src/Command/CommandBus.php` | Default-deny capability decisions, approval signatures, role/scope/limit checks, tenant checks and policy callbacks before execution. Host authentication and trusted context construction remain host responsibilities. |
 | Evidence lineage | `src/Cognition/*`, `src/Events/*`, `src/Http/Controllers/CognitiveEventController.php` | Tenant-scoped cognitive events and outcome links for audit and later learning. |
 | Agent-oriented building blocks | `src/Engines/{Planning,Executive,Cognitive,Memory,Learning}/*` | Contract-driven deterministic planning, routing, decision, memory and learning primitives. The 80-engine library is a replaceable baseline library, not 80 trained agents or models. |
 
@@ -55,8 +55,10 @@ From the current repository tree:
 - `tests/run.php` covers core runtime, policy, local-intelligence, offline and host-mapping behaviour.
 - `tests/template_catalogue_run.php`, `tests/assurance_workflows_run.php` and `tests/commerce_vertical_workflows_run.php` cover the executable/draft catalogue boundary and workflow governance.
 - `tests/ts/offline.test.js` covers encrypted outbox round trips, local language extraction, sync conflicts and cognitive-event replay.
-- `scripts/authority-policy-eval.php` runs 31 fixed policy scenarios; the committed report is `eval-results/authority-policy-latest.md`.
-- `.github/workflows/verify.yml` runs `php bin/verify.php`, PHP syntax checks and JSON validation after installing the declared Node.js/TypeScript toolchain.
+- `packages/policy-engine/tests/run.php` and `tests/run.php` exercise the extracted gate and the wider runtime.
+- `scripts/authority-policy-eval.php` runs the fixed 31-case corpus; `bin/authority-eval.php` runs a separate 100-case policy and execution-boundary suite.
+- `bin/benchmark.php` and `benchmarks/offline-benchmark.js` measure compiler, duplicate-command, and encrypted outbox paths on the CI host.
+- `.github/workflows/verify.yml` runs the complete verifier, PHP and TypeScript coverage, authority evaluation, and measured benchmarks. The separate authority workflow runs the 31-case corpus.
 
 Run the package checks with:
 
@@ -67,5 +69,3 @@ php bin/verify.php
 ```
 
 The repository currently records package-level evidence only. `reports/workcore-compatibility.json` intentionally reports zero connected-host-verified templates; deployment-specific models, permissions, migrations, queues, browser integration, provider integration and load behaviour remain host integration work.
-
-

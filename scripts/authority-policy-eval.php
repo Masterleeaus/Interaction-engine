@@ -15,14 +15,17 @@ $secret = 'interaction-policy-eval-secret-2026';
 spl_autoload_register(static function (string $class) use ($root): void {
     $prefixes = [
         'TitanZero\\Engines\\' => $root . '/src/Engines/',
-        'TitanZero\\Interaction\\' => $root . '/src/',
+        'TitanZero\\Interaction\\' => [$root . '/packages/policy-engine/src/', $root . '/src/'],
     ];
     foreach ($prefixes as $prefix => $base) {
         if (str_starts_with($class, $prefix)) {
             $relative = substr($class, strlen($prefix));
-            $path = $base . str_replace('\\', '/', $relative) . '.php';
-            if (is_file($path)) {
-                require_once $path;
+            foreach ((array) $base as $directory) {
+                $path = $directory . str_replace('\\', '/', $relative) . '.php';
+                if (is_file($path)) {
+                    require_once $path;
+                    return;
+                }
             }
             return;
         }
@@ -109,11 +112,12 @@ foreach ($scenarioDocument['cases'] as $case) {
                 ? max((int) ($case['approval_ttl_seconds'] ?? 900) + 1, (int) ($approvalCase['issue_ttl_seconds'] ?? 901))
                 : (int) ($approvalCase['issue_ttl_seconds'] ?? 300);
 
-            $approval = $signer->issue(
+            $approval = $signer->issueForPayload(
                 capability: $approvalCapability,
                 tenantId: $approvalTenant,
                 approvedBy: (string) ($approvalCase['approved_by'] ?? 'manager-1'),
                 approverRoles: (array) ($approvalCase['roles'] ?? ['manager']),
+                payload: $payload,
                 ttlSeconds: $approvalTtl,
             );
 

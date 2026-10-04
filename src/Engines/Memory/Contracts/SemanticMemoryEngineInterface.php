@@ -10,4 +10,5 @@ interface SemanticMemoryEngineInterface
     public function query(array $query): array;
     public function consolidate(): void;
     public function getFacts(): array;
+    public function forget(array $query): void;
 }

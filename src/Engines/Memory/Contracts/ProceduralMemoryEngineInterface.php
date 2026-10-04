@@ -11,4 +11,5 @@ interface ProceduralMemoryEngineInterface
     public function getSkill(string $name): ?array;
     public function listSkills(): array;
     public function consolidate(): void;
+    public function forget(array $query): void;
 }

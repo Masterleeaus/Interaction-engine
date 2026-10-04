@@ -11,9 +11,27 @@ class RecommendationEngine implements RecommendationEngineInterface
     private array $items = [];
     private array $interactions = [];
 
+    public function setCatalog(array $items): void
+    {
+        $this->items = $items;
+    }
+
+    public function recordInteraction(int $userId, string $itemId, int $count = 1): void
+    {
+        if ($userId < 0 || trim($itemId) === '' || $count < 1) {
+            throw new \InvalidArgumentException('A user, item and positive interaction count are required.');
+        }
+        $this->interactions[$userId][$itemId] = ($this->interactions[$userId][$itemId] ?? 0) + $count;
+    }
+
     public function recommend(int $userId, array $context): array
     {
-        $this->items = $context['items'] ?? $this->items;
+        if (isset($context['items'])) {
+            if (!is_array($context['items'])) {
+                throw new \InvalidArgumentException('Recommendation catalog must be an array.');
+            }
+            $this->setCatalog($context['items']);
+        }
         $preferences = array_map('strtolower', array_map('strval', $context['preferences'] ?? []));
         $results = [];
         foreach ($this->items as $id => $item) {
@@ -29,7 +47,7 @@ class RecommendationEngine implements RecommendationEngineInterface
             $results[] = ['id' => (string) $id, 'item' => $item, 'score' => round(min(1.0, $score), 4)];
         }
         usort($results, static fn(array $a, array $b): int => $b['score'] <=> $a['score']);
-        return array_slice($results, 0, (int) ($context['limit'] ?? 5));
+        return array_slice($results, 0, max(0, (int) ($context['limit'] ?? 5)));
     }
 
     public function getSimilarItems(string $itemId): array

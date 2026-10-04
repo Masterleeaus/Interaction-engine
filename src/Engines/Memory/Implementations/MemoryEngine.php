@@ -19,12 +19,12 @@ class MemoryEngine implements MemoryEngineInterface
 
     public function store(string $type, array $data): void
     {
-        match ($type) {
-            'episodic' => $this->episodic->store($data),
-            'semantic' => $this->semantic->store($data),
-            'procedural' => $this->procedural->store($data),
-            default => null,
-        };
+        switch ($type) {
+            case 'episodic': $this->episodic->store($data); return;
+            case 'semantic': $this->semantic->store($data); return;
+            case 'procedural': $this->procedural->store($data); return;
+            default: throw new \InvalidArgumentException("Unknown memory type '{$type}'.");
+        }
     }
 
     public function recall(string $type, array $query): array
@@ -33,14 +33,22 @@ class MemoryEngine implements MemoryEngineInterface
             'episodic' => $this->episodic->recall($query),
             'semantic' => $this->semantic->query($query),
             'procedural' => $this->procedural->recall($query),
-            default => [],
+            default => throw new \InvalidArgumentException("Unknown memory type '{$type}'."),
         };
     }
 
     public function forget(string $type, array $query): void
     {
-        if ($type === 'episodic' && isset($query['older_than_days'])) {
-            $this->episodic->forgetOlderThan((int) $query['older_than_days']);
+        switch ($type) {
+            case 'episodic':
+                if (!isset($query['older_than_days'])) {
+                    throw new \InvalidArgumentException('Episodic memory deletion requires older_than_days.');
+                }
+                $this->episodic->forgetOlderThan((int) $query['older_than_days']);
+                return;
+            case 'semantic': $this->semantic->forget($query); return;
+            case 'procedural': $this->procedural->forget($query); return;
+            default: throw new \InvalidArgumentException("Unknown memory type '{$type}'.");
         }
     }
 

@@ -9,4 +9,6 @@ interface MonitoringEngineInterface
     public function getStatus(): array;
     public function getMetrics(): array;
     public function setAlert(string $metric, float $threshold): void;
+    public function recordMetric(string $metric, float $value): void;
+    public function getAlerts(): array;
 }
