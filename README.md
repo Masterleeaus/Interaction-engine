@@ -1,4 +1,4 @@
-![Titan Interaction Runtime — GOVERNED WORKFLOWS · ONLINE + OFFLINE](docs/images/portfolio-banner.svg)
+![Titan Interaction Runtime - GOVERNED WORKFLOWS � ONLINE + OFFLINE](docs/images/portfolio-banner.svg)
 
 <div align="center">
 
@@ -84,12 +84,11 @@ The module is intended for a compatible Laravel host. Verify the host version, d
 
 ```bash
 composer install
-composer test
-npm install
-npm test
+npm ci
+php bin/verify.php
 ```
 
-The repository defines Composer and npm test scripts. A prior cumulative build report records standalone syntax, engine-pair, schema, workflow, offline encryption, online command-dispatch, and TypeScript checks. Those historical results are not a substitute for rerunning tests on the current commit or validating a destination host.
+`php bin/verify.php` runs the PHP suites and the TypeScript offline-companion tests. The workflow installs the declared TypeScript toolchain before invoking the same verifier, so a clean checkout does not depend on a globally installed compiler. A prior cumulative build report records historical checks; it is not a substitute for rerunning tests on the current commit or validating a destination host.
 
 ## Integration requirements
 
@@ -105,11 +104,13 @@ The host business system remains the authority for operational mutations.
 
 ## Repository map
 
-- `interactions/`, `wizards/`, `templates/` — interaction and workflow definitions
-- `resources/ts/` — device-side offline companion
-- `resources/openapi.yaml` — API contract
-- `tests/` — runtime and workflow checks
-- `docs/`, `reports/` — architecture and verification evidence
+- `interactions/`, `wizards/`, `templates/` - interaction and workflow definitions
+- `resources/ts/` - device-side offline companion
+- `resources/openapi.yaml` - API contract
+- `tests/` - runtime and workflow checks
+- `docs/`, `reports/` - architecture and verification evidence
+
+The AI and agent-oriented implementation map is in [`docs/AI_ENGINEERING.md`](docs/AI_ENGINEERING.md). It distinguishes deterministic heuristics, optional cloud-model integration, policy enforcement and host-boundary work from claims the repository does not make.
 
 ## Security principles
 
