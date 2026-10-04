@@ -10,7 +10,16 @@
 
 [![Authority Policy Evaluation](https://github.com/Masterleeaus/Interaction-engine/actions/workflows/authority-policy-eval.yml/badge.svg?branch=main)](https://github.com/Masterleeaus/Interaction-engine/actions/workflows/authority-policy-eval.yml)
 
-## Product architecture and engineering highlights
+<p align="center">
+  <a href="#measured-evidence">Measured evidence</a> ·
+  <a href="#what-is-new">What is new</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#installation-and-quick-start">Quick start</a> ·
+  <a href="#reproducible-authority-policy-evaluation">Evaluation</a> ·
+  <a href="#security-principles">Security</a>
+</p>
+
+## Overview
 
 A governed interaction runtime that turns chat, voice, mobile, desktop, and API requests into authorized, traceable business workflows.
 
@@ -19,7 +28,47 @@ A governed interaction runtime that turns chat, voice, mobile, desktop, and API 
 
 > **Status: module foundation with recorded standalone verification; host deployment readiness remains environment-specific.** The repository includes a cumulative build report and verification scripts. Its report explicitly lists host tenancy, permissions, queues, database compatibility, PWA integration, provider integration, and production-load testing as remaining destination-system checks.
 
-## What it provides
+
+## Measured evidence
+
+The repository directly evaluates its most important control claim: **understanding a request does not grant authority to execute it.**
+
+The current fixed corpus calls `PolicyEngine` directly across user-only actions, signed approvals, delegation, tenant boundaries, authentication freshness, authority levels, and policy callbacks.
+
+| Measured property | Current result | Reproduce |
+| --- | ---: | --- |
+| Unauthorized actions allowed | **0 / 24** | `php scripts/authority-policy-eval.php` |
+| Valid actions wrongly denied | **0 / 7** | `php scripts/authority-policy-eval.php` |
+| Wrong-tenant approvals allowed | **0 / 1** | `php scripts/authority-policy-eval.php` |
+| Scenario mismatches | **0 / 31** | `php scripts/authority-policy-eval.php` |
+| Allow-all baseline: blocked cases allowed through | **24 / 24** | same scenario corpus |
+
+**Evaluated:** 4 October 2026 · **Seed:** `20261004` · **Scenarios:** 31 · **PHP:** 8.2.34 · **Scenario SHA-256:** `a1e863c857aa05e70f720224c3f1bb0065f2f1c699fe27e438ce4a64a58ff340`
+
+This evaluation covers policy decisions only. It does **not** establish correctness of a destination host adapter, persistence layer, queue, external provider, or downstream execution path.
+
+## What is new
+
+The Interaction Engine's technical signature is a governed bridge between conversational interfaces and business mutation paths. Model understanding, workflow selection, authority, execution, evidence, and offline replay are separate concerns rather than one agent loop.
+
+| Mechanism | Engineering distinction | Where to inspect |
+| --- | --- | --- |
+| **Capability policy boundary** | Unregistered or insufficiently authorised capabilities fail closed; model intent does not confer execution rights. | `src/`, policy tests, authority evaluator |
+| **Schema-driven interaction runtime** | Resumable wizards and versioned workflow definitions turn free-form interactions into explicit structured state. | `wizards/`, `interactions/`, `templates/` |
+| **Online/offline policy continuity** | Device-side commands are queued for reconciliation instead of bypassing governance while disconnected. | `resources/ts/`, IndexedDB companion |
+| **Readiness-aware template catalogue** | Ready definitions and drafts are distinguished explicitly; drafts remain non-executable. | `templates/`, `GET /templates` |
+| **Evidence-oriented execution path** | Outcomes and execution records are designed to remain traceable through capability and policy stages. | `reports/`, `resources/openapi.yaml` |
+
+### Evidence status
+
+- **Implemented:** interaction runtime foundations, wizards/templates, policy layer, OpenAPI contract, and offline companion.
+- **Tested:** standalone verification scripts and CI workflows in this repository.
+- **Evaluated:** 31 fixed authority-policy scenarios against `PolicyEngine`.
+- **Host-dependent:** tenancy mappings, permissions, queues, cache, scheduler, database compatibility, PWA integration, cloud-provider wiring, and load behaviour.
+- **Not claimed:** production certification or universal host compatibility.
+
+
+## Verified capabilities
 
 The Interaction Engine connects chat, voice, mobile, desktop, and API experiences to structured workflows, local intelligence, business capabilities, and policy-controlled execution. Understanding user intent does not grant authority: recommendation, approval, and execution remain separate stages.
 
@@ -82,7 +131,7 @@ Chat / Voice / Mobile / Desktop / API
 - PHP Sodium and AES-GCM
 - OpenAPI and JSON/schema-driven definitions
 
-## Installation
+## Installation and quick start
 
 The module is intended for a compatible Laravel host. Verify the host version, dependency constraints, migrations, service provider registration, auth/tenant context, queue/cache setup, and route exposure before deployment.
 
@@ -94,7 +143,7 @@ php bin/verify.php
 
 `php bin/verify.php` runs the PHP suites and the TypeScript offline-companion tests. The workflow installs the declared TypeScript toolchain before invoking the same verifier, so a clean checkout does not depend on a globally installed compiler. A prior cumulative build report records historical checks; it is not a substitute for rerunning tests on the current commit or validating a destination host.
 
-## Integration requirements
+## Integration requirements and current limitations
 
 A destination system must validate:
 
