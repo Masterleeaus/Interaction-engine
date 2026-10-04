@@ -1,0 +1,274 @@
+{
+    "title": "Interaction Engine authority-policy gate",
+    "evaluated_at_utc": "2026-10-04T02:35:32Z",
+    "evaluated_commit": "bdbe73cc445b900d29126e081bd5f2341e98ee6f",
+    "scenario_seed": 20261004,
+    "scenario_count": 31,
+    "scenario_sha256": "a1e863c857aa05e70f720224c3f1bb0065f2f1c699fe27e438ce4a64a58ff340",
+    "php_version": "8.2.34",
+    "baseline": {
+        "name": "allow-all bypass",
+        "description": "Always allows the command and does not consult PolicyEngine; illustrative control only.",
+        "unauthorized_cases_allowed": 24,
+        "unauthorized_cases_total": 24
+    },
+    "metrics": {
+        "unauthorized_actions_allowed": 0,
+        "unauthorized_actions_total": 24,
+        "valid_actions_wrongly_denied": 0,
+        "valid_actions_total": 7,
+        "wrong_tenant_approvals_allowed": 0,
+        "wrong_tenant_attempts_total": 1,
+        "scenario_failures": 0
+    },
+    "cases": [
+        {
+            "id": "human_owner_fresh_allowed",
+            "category": "user-only",
+            "expected_allowed": true,
+            "actual_allowed": true,
+            "passed": true,
+            "reason": null
+        },
+        {
+            "id": "human_any_required_role_allowed",
+            "category": "user-only",
+            "expected_allowed": true,
+            "actual_allowed": true,
+            "passed": true,
+            "reason": null
+        },
+        {
+            "id": "valid_scoped_approval_allowed",
+            "category": "approval",
+            "expected_allowed": true,
+            "actual_allowed": true,
+            "passed": true,
+            "reason": null
+        },
+        {
+            "id": "delegated_agent_at_limit_allowed",
+            "category": "delegation",
+            "expected_allowed": true,
+            "actual_allowed": true,
+            "passed": true,
+            "reason": null
+        },
+        {
+            "id": "delegated_agent_with_all_scopes_allowed",
+            "category": "delegation",
+            "expected_allowed": true,
+            "actual_allowed": true,
+            "passed": true,
+            "reason": null
+        },
+        {
+            "id": "human_can_perform_delegated_capability",
+            "category": "delegation",
+            "expected_allowed": true,
+            "actual_allowed": true,
+            "passed": true,
+            "reason": null
+        },
+        {
+            "id": "additional_policy_explicit_allow",
+            "category": "policy-callback",
+            "expected_allowed": true,
+            "actual_allowed": true,
+            "passed": true,
+            "reason": null
+        },
+        {
+            "id": "unknown_capability_denied",
+            "category": "fail-closed",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "No authority policy is registered for this capability."
+        },
+        {
+            "id": "observe_only_denied",
+            "category": "authority-level",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "This capability cannot be executed at its configured authority level."
+        },
+        {
+            "id": "recommend_only_denied",
+            "category": "authority-level",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "This capability cannot be executed at its configured authority level."
+        },
+        {
+            "id": "prepare_only_denied",
+            "category": "authority-level",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "This capability cannot be executed at its configured authority level."
+        },
+        {
+            "id": "agent_cannot_use_user_only_action",
+            "category": "user-only",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A verified human user must perform this action."
+        },
+        {
+            "id": "human_without_user_id_denied",
+            "category": "user-only",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A verified human user must perform this action."
+        },
+        {
+            "id": "human_without_required_role_denied",
+            "category": "user-only",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "The user does not hold a required role."
+        },
+        {
+            "id": "stale_human_authentication_denied",
+            "category": "user-only",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "Fresh authentication is required."
+        },
+        {
+            "id": "approval_without_signer_denied",
+            "category": "approval",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A valid, scoped and unexpired human approval is required."
+        },
+        {
+            "id": "approval_missing_denied",
+            "category": "approval",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A valid, scoped and unexpired human approval is required."
+        },
+        {
+            "id": "tampered_approval_signature_denied",
+            "category": "approval",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A valid, scoped and unexpired human approval is required."
+        },
+        {
+            "id": "approval_for_other_capability_denied",
+            "category": "approval",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A valid, scoped and unexpired human approval is required."
+        },
+        {
+            "id": "cross_tenant_approval_denied",
+            "category": "tenant-boundary",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A valid, scoped and unexpired human approval is required."
+        },
+        {
+            "id": "expired_approval_denied",
+            "category": "approval",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A valid, scoped and unexpired human approval is required."
+        },
+        {
+            "id": "approval_over_policy_ttl_denied",
+            "category": "approval",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A valid, scoped and unexpired human approval is required."
+        },
+        {
+            "id": "approval_without_required_approver_role_denied",
+            "category": "approval",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A valid, scoped and unexpired human approval is required."
+        },
+        {
+            "id": "approval_without_approver_identity_denied",
+            "category": "approval",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "A valid, scoped and unexpired human approval is required."
+        },
+        {
+            "id": "delegated_agent_missing_scope_denied",
+            "category": "delegation",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "Missing delegated scope: region:au."
+        },
+        {
+            "id": "delegated_agent_wrong_scope_denied",
+            "category": "delegation",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "Missing delegated scope: refunds:create."
+        },
+        {
+            "id": "delegated_amount_over_limit_denied",
+            "category": "delegation",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "amount exceeds delegated limit."
+        },
+        {
+            "id": "delegated_amount_just_over_limit_denied",
+            "category": "delegation",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "amount exceeds delegated limit."
+        },
+        {
+            "id": "custom_policy_reason_denies",
+            "category": "policy-callback",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "Job is not ready."
+        },
+        {
+            "id": "custom_policy_false_denies",
+            "category": "policy-callback",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "Policy failed."
+        },
+        {
+            "id": "custom_policy_structured_denial",
+            "category": "policy-callback",
+            "expected_allowed": false,
+            "actual_allowed": false,
+            "passed": true,
+            "reason": "Approval required by the connected host."
+        }
+    ]
+}
