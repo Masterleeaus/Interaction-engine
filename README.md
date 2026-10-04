@@ -50,9 +50,9 @@ Only trusted server-side approval code should issue grants. The host remains res
 
 ## Current 100-case authority evaluation
 
-`php bin/authority-eval.php` exercises 100 deterministic cases across approval-required, user-only, delegated, prepare-only, and unregistered capabilities. It reports unauthorized actions executed, valid actions wrongly blocked, attempts blocked, and an allow-gate-bypassed no-op baseline. The expected result is **0 unauthorized actions executed** and **0 valid actions wrongly blocked**.
+The 100 deterministic scenarios cover approval-required, user-only, delegated, prepare-only, and unregistered capabilities. In CI, all 30 expected allows were allowed and all 70 expected denials were denied: zero valid actions were wrongly blocked and zero unauthorized actions passed the gate. The gate-bypassed control forwards unauthorized cases only to a no-op sink.
 
-CI stores the JSON report with the run artifacts. A committed report for this branch will be added after the PHP workflow has executed on the implementation commit. The earlier 31-case evaluation and its exact historical results remain available in [`eval-results/authority-policy-latest.md`](eval-results/authority-policy-latest.md); those numbers apply to the commit recorded in that report, not to this branch.
+See the [100-case evaluation report](reports/authority-evaluation.md) and its [JSON result](reports/authority-evaluation.json). The separate 31-case suite also passed with zero unauthorized allows, zero wrongly denied valid actions, and zero scenario mismatches; see [its report](eval-results/authority-policy-latest.md). Both evaluations exercise the repository policy code directly and do not validate a connected host.
 
 ## Optional live model proposal
 
@@ -92,13 +92,13 @@ npm ci
 php bin/verify.php
 ```
 
-The verifier runs the standalone policy suite, PHP runtime and workflow suites, and TypeScript tests. GitHub Actions also runs PHP coverage, TypeScript coverage, 100 authority cases, and measured benchmarks. This development sandbox does not include PHP, so PHP results are reported only after the remote workflow completes.
+The verifier runs the standalone policy suite, PHP runtime and workflow suites, and TypeScript tests. GitHub Actions also runs PHP and TypeScript coverage, 100 authority cases, and measured benchmarks. See the [CI verification evidence](reports/verification-evidence.md) for the current counts and coverage scope.
 
 The TypeScript offline companion uses IndexedDB and AES-256-GCM for device-side command storage. The test suite uses a memory adapter; browser, database, authentication, and connected-host behavior still require validation in the destination application.
 
 ## Measured performance
 
-The benchmark scripts measure interaction-definition compilation, duplicate-command handling, and encrypted outbox enqueue/decrypt. Published results will include the CI commit, environment, sample count, p50, and p95; no values are estimated. See [`benchmarks/performance.md`](benchmarks/performance.md).
+The benchmark scripts measure interaction-definition compilation, duplicate-command handling, and encrypted outbox enqueue/decrypt. The [measured report](benchmarks/performance.md) records sample counts, p50/p95, runtime, commit, and limits; results are a single hosted-CI run, not production capacity claims.
 
 ## Repository hygiene, history, and license
 

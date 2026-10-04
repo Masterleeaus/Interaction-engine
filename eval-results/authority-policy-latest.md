@@ -1,9 +1,9 @@
 # Authority Policy Evaluation
 
-- Evaluated: 2026-10-04T02:35:32Z
-- Evaluator commit: bdbe73cc445b900d29126e081bd5f2341e98ee6f
+- Evaluated: 2026-10-04T03:42:55Z
+- Evaluator commit: 9181b633447d33e532d3b1cb127d00f14dcadd5d
 - Scenarios: 31 (seed 20261004)
-- Scenario SHA-256: a1e863c857aa05e70f720224c3f1bb0065f2f1c699fe27e438ce4a64a58ff340
+- Scenario SHA-256: d8b180f580117bd866498988a091e22640f8909d966bdc97ae56a8c00358f0ac
 - PHP: 8.2.34
 - Baseline: **24/24** blocked cases would pass through an allow-all bypass.
 
