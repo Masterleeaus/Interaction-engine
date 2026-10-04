@@ -1,0 +1,17 @@
+{
+  "name": "titanzero/policy-engine",
+  "description": "Standalone, fail-closed authority policy and signed approval package",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "TitanZero\\Interaction\\": "src/"
+    }
+  },
+  "scripts": {
+    "test": "php tests/run.php"
+  }
+}

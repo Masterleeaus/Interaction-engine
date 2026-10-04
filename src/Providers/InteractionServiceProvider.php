@@ -19,6 +19,7 @@ use TitanZero\Interaction\Compiler\ConditionRegistry;
 use TitanZero\Interaction\AI\AIServiceInterface;
 use TitanZero\Interaction\AI\NullAIService;
 use TitanZero\Interaction\AI\OpenAIService;
+use TitanZero\Interaction\AI\OpenAIActionProposer;
 use TitanZero\Interaction\AutoComplete\AutoCompleteEngine;
 use TitanZero\Interaction\Command\CommandBus;
 use TitanZero\Interaction\Cognition\Events\CognitiveEventStoreInterface;
@@ -126,32 +127,32 @@ class InteractionServiceProvider extends ServiceProvider
         // separate internal states (e.g. two different $interruptions
         // queues on "the" executive engine) — bind the real concrete class
         // once and alias every interface to that one instance.
-        $this->app->singleton(\TitanZero\Engines\Executive\Implementations\ExecutiveEngine::class);
-        $this->app->singleton(
+        $this->app->scoped(\TitanZero\Engines\Executive\Implementations\ExecutiveEngine::class);
+        $this->app->scoped(
             \TitanZero\Engines\Executive\Contracts\ExecutiveEngineInterface::class,
             fn ($app) => $app->make(\TitanZero\Engines\Executive\Implementations\ExecutiveEngine::class)
         );
-        $this->app->singleton(
+        $this->app->scoped(
             ExecutiveEngineInterface::class,
             fn ($app) => $app->make(\TitanZero\Engines\Executive\Implementations\ExecutiveEngine::class)
         );
 
-        $this->app->singleton(\TitanZero\Engines\Cognitive\Implementations\CognitiveOrchestrator::class);
-        $this->app->singleton(
+        $this->app->scoped(\TitanZero\Engines\Cognitive\Implementations\CognitiveOrchestrator::class);
+        $this->app->scoped(
             \TitanZero\Engines\Cognitive\Contracts\CognitiveOrchestratorInterface::class,
             fn ($app) => $app->make(\TitanZero\Engines\Cognitive\Implementations\CognitiveOrchestrator::class)
         );
-        $this->app->singleton(
+        $this->app->scoped(
             CognitiveOrchestratorInterface::class,
             fn ($app) => $app->make(\TitanZero\Engines\Cognitive\Implementations\CognitiveOrchestrator::class)
         );
 
-        $this->app->singleton(\TitanZero\Engines\Memory\Implementations\WorldModelEngine::class);
-        $this->app->singleton(
+        $this->app->scoped(\TitanZero\Engines\Memory\Implementations\WorldModelEngine::class);
+        $this->app->scoped(
             \TitanZero\Engines\Memory\Contracts\WorldModelEngineInterface::class,
             fn ($app) => $app->make(\TitanZero\Engines\Memory\Implementations\WorldModelEngine::class)
         );
-        $this->app->singleton(
+        $this->app->scoped(
             WorldModelInterface::class,
             fn ($app) => $app->make(\TitanZero\Engines\Memory\Implementations\WorldModelEngine::class)
         );
@@ -191,6 +192,10 @@ class InteractionServiceProvider extends ServiceProvider
             $client = \OpenAI::factory()->withApiKey($apiKey)->make();
             return new OpenAIService($client, (string) config('interaction.ai.model', 'gpt-4o-mini'));
         });
+        $this->app->singleton(OpenAIActionProposer::class, fn($app): OpenAIActionProposer => new OpenAIActionProposer(
+            $app->make(AIServiceInterface::class),
+            (string) config('interaction.ai.model', 'gpt-4o-mini'),
+        ));
 
         $this->app->singleton(OfflineQueueInterface::class, OfflineQueue::class);
         $this->app->singleton(ConflictResolverInterface::class, ConflictResolver::class);
@@ -344,7 +349,10 @@ class InteractionServiceProvider extends ServiceProvider
             foreach ($engines as $engine) {
                 $contract = "TitanZero\\Engines\\{$domain}\\Contracts\\{$engine}Interface";
                 $implementation = "TitanZero\\Engines\\{$domain}\\Implementations\\{$engine}";
-                $this->app->singleton($contract, $implementation);
+                // Engine-local histories, retry state and dispatch queues must
+                // live only for the current request/job lifecycle. Persistent
+                // learning and memory belong in their explicit cache/database stores.
+                $this->app->scoped($contract, $implementation);
             }
         }
     }

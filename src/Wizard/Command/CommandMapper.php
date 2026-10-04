@@ -22,14 +22,17 @@ final class CommandMapper
         ]));
 
         $payload = $session->data;
-        if ($this->hasApproval($payload)) {
-            $payload['_approval'] = [
-                'id' => (string) $payload['approval_id'],
-                'approved_by' => (string) $payload['approved_by'],
-                'approved_at' => (string) $payload['approved_at'],
-                'tenant_id' => $tenantId,
-                'capability' => $session->definition->capability,
-            ];
+        $approvalEvidence = array_intersect_key($payload, array_flip(['approval_id', 'approved_by', 'approved_at']));
+        if ($approvalEvidence !== []) {
+            // User-entered approval fields are evidence for review, not authority.
+            $payload['_approval_evidence'] = $approvalEvidence;
+        }
+
+        // Only an approval grant placed in trusted, server-built context can
+        // reach PolicyEngine. Never mint a signature from wizard form values.
+        $grant = $context['signed_approvals'][$session->definition->capability] ?? null;
+        if (is_array($grant) && !empty($grant['signature'])) {
+            $payload['_approval'] = $grant;
         }
 
         return [
@@ -52,16 +55,6 @@ final class CommandMapper
                 'created_via' => 'universal_wizard',
             ],
         ];
-    }
-
-    private function hasApproval(array $payload): bool
-    {
-        foreach (['approval_id', 'approved_by', 'approved_at'] as $field) {
-            if (!isset($payload[$field]) || $payload[$field] === '') {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static function uuid(): string

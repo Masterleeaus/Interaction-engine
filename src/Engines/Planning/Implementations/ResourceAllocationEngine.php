@@ -11,12 +11,17 @@ class ResourceAllocationEngine implements ResourceAllocationEngineInterface
 
     public function allocate(string $resource, string $task): void
     {
+        if (trim($resource) === '' || trim($task) === '') {
+            throw new \InvalidArgumentException('Resource and task identifiers are required.');
+        }
         $this->allocations[$resource] = $task;
     }
 
     public function deallocate(string $resource, string $task): void
     {
-        unset($this->allocations[$resource]);
+        if (($this->allocations[$resource] ?? null) === $task) {
+            unset($this->allocations[$resource]);
+        }
     }
 
     public function getResourceAllocation(): array

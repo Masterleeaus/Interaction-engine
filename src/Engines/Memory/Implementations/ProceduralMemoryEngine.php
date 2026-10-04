@@ -18,18 +18,38 @@ class ProceduralMemoryEngine implements ProceduralMemoryEngineInterface
 
     public function store(array $skill): void
     {
+        $name = trim((string) ($skill['name'] ?? ''));
+        if ($name === '') {
+            throw new \InvalidArgumentException('A procedural skill must have a non-empty name.');
+        }
+        $skill['name'] = $name;
         $this->skills[$skill['name']] = $skill;
         $this->saveSkills();
     }
 
     public function recall(array $query): array
     {
+        $keyword = strtolower(trim((string) ($query['keyword'] ?? '')));
+        if ($keyword === '') {
+            throw new \InvalidArgumentException('Procedural memory recall requires a non-empty keyword.');
+        }
         $results = [];
         foreach ($this->skills as $skill) {
-            if (str_contains($skill['name'], $query['keyword'] ?? '')) {
+            $searchable = strtolower(implode(' ', array_filter([
+                (string) ($skill['name'] ?? ''),
+                (string) ($skill['description'] ?? ''),
+                implode(' ', array_map('strval', (array) ($skill['steps'] ?? []))),
+            ])));
+            if (str_contains($searchable, $keyword)) {
+                $skill['_match_score'] = substr_count($searchable, $keyword);
                 $results[] = $skill;
             }
         }
+        usort($results, static fn(array $a, array $b): int => $b['_match_score'] <=> $a['_match_score']);
+        foreach ($results as &$skill) {
+            unset($skill['_match_score']);
+        }
+        unset($skill);
         return $results;
     }
 
@@ -45,6 +65,27 @@ class ProceduralMemoryEngine implements ProceduralMemoryEngineInterface
 
     public function consolidate(): void
     {
+        $this->saveSkills();
+    }
+
+    public function forget(array $query): void
+    {
+        $name = trim((string) ($query['name'] ?? ''));
+        if ($name !== '') {
+            unset($this->skills[$name]);
+            $this->saveSkills();
+            return;
+        }
+        $keyword = strtolower(trim((string) ($query['keyword'] ?? '')));
+        if ($keyword === '') {
+            throw new \InvalidArgumentException('Procedural memory deletion requires a name or non-empty keyword.');
+        }
+        foreach ($this->skills as $skillName => $skill) {
+            $text = strtolower(json_encode($skill, JSON_UNESCAPED_SLASHES) ?: '');
+            if (str_contains($text, $keyword)) {
+                unset($this->skills[$skillName]);
+            }
+        }
         $this->saveSkills();
     }
 

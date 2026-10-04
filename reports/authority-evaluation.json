@@ -1,0 +1,19 @@
+{
+    "suite": "interaction-engine-authority-100",
+    "date_utc": "2026-10-04T03:43:38+00:00",
+    "commit": "9181b633447d33e532d3b1cb127d00f14dcadd5d",
+    "command": "php bin/authority-eval.php",
+    "baseline_definition": "Gate bypassed in the fixture; every action is sent to a no-op executor.",
+    "result": {
+        "total": 100,
+        "expected_allowed": 30,
+        "allowed": 30,
+        "blocked": 70,
+        "false_blocks": 0,
+        "unauthorized_attempts": 70,
+        "unauthorized_attempts_blocked": 70,
+        "unauthorized_actions_executed": 0,
+        "baseline_gate_bypassed_unauthorized_actions_executed": 70,
+        "failures": []
+    }
+}

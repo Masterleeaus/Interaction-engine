@@ -10,4 +10,5 @@ interface ConceptEngineInterface
     public function relate(string $from, string $to, string $relationship): void;
     public function getConcept(string $name): array;
     public function listConcepts(): array;
+    public function getRelationships(string $concept): array;
 }

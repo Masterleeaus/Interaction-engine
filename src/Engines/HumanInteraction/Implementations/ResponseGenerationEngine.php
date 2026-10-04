@@ -29,10 +29,13 @@ class ResponseGenerationEngine implements ResponseGenerationEngineInterface
             return "Regarding \"{$context['question']}\" — {$answer}.";
         }
 
-        $summary = collect($context)
-            ->filter(fn ($v) => is_scalar($v))
-            ->map(fn ($v, $k) => "{$k}: {$v}")
-            ->implode(', ');
+        $summaryParts = [];
+        foreach ($context as $key => $value) {
+            if (is_scalar($value)) {
+                $summaryParts[] = "{$key}: {$value}";
+            }
+        }
+        $summary = implode(', ', $summaryParts);
 
         return $summary !== ''
             ? "Based on {$summary}, here's what I found relevant."
@@ -41,7 +44,16 @@ class ResponseGenerationEngine implements ResponseGenerationEngineInterface
 
     public function generateWithTemplate(string $template, array $data): string
     {
-        return str_replace(array_keys($data), array_values($data), $template);
+        return preg_replace_callback('/\{\{\s*([A-Za-z0-9_.-]+)\s*\}\}/', static function (array $match) use ($data): string {
+            $value = $data;
+            foreach (explode('.', $match[1]) as $segment) {
+                if (!is_array($value) || !array_key_exists($segment, $value)) {
+                    return $match[0];
+                }
+                $value = $value[$segment];
+            }
+            return is_scalar($value) ? (string) $value : (json_encode($value, JSON_UNESCAPED_SLASHES) ?: '');
+        }, $template) ?? $template;
     }
 
     public function getResponseType(): string

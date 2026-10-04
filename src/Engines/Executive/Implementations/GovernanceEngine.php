@@ -11,8 +11,11 @@ class GovernanceEngine implements GovernanceEngineInterface
 {
     public function log(array $event): void
     {
+        if ($event === []) {
+            throw new \InvalidArgumentException('Governance event cannot be empty.');
+        }
         DB::table('governance_logs')->insert([
-            'event' => json_encode($event),
+            'event' => json_encode($event, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES),
             'created_at' => now(),
         ]);
     }
@@ -51,6 +54,30 @@ class GovernanceEngine implements GovernanceEngineInterface
 
     public function report(string $type): array
     {
-        return ['data' => [], 'type' => $type];
+        $type = trim($type);
+        if ($type === '') {
+            throw new \InvalidArgumentException('Report type is required.');
+        }
+        $rows = DB::table('governance_logs')
+            ->where('event', 'LIKE', '%' . addcslashes($type, '%_\\') . '%')
+            ->orderByDesc('created_at')
+            ->limit(1000)
+            ->get(['event', 'created_at']);
+        $events = [];
+        foreach ($rows as $row) {
+            $event = json_decode((string) $row->event, true);
+            if (!is_array($event)) {
+                continue;
+            }
+            if (($event['type'] ?? $event['event_type'] ?? null) === $type) {
+                $events[] = $event + ['recorded_at' => (string) $row->created_at];
+            }
+        }
+        return [
+            'type' => $type,
+            'count' => count($events),
+            'data' => $events,
+            'generated_at' => gmdate(DATE_ATOM),
+        ];
     }
 }

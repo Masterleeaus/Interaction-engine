@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TitanZero\Engines\BusinessIntelligence\Implementations;
 
 use TitanZero\Engines\BusinessIntelligence\Contracts\OperationsEngineInterface;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Real efficiency computed from $data when available, and area-specific
@@ -35,7 +36,27 @@ class OperationsEngine implements OperationsEngineInterface
 
     public function getPerformanceMetrics(): array
     {
-        return ['efficiency' => 0.7, 'productivity' => 0.8];
+        try {
+            $total = (int) DB::table('jobs')->count();
+            $completed = (int) DB::table('jobs')->where('status', 'completed')->count();
+            $active = (int) DB::table('jobs')->whereIn('status', ['assigned', 'in_progress'])->count();
+        } catch (\Throwable $error) {
+            return [
+                'available' => false,
+                'efficiency' => null,
+                'productivity' => null,
+                'reason' => 'Host jobs schema unavailable: ' . $error->getMessage(),
+            ];
+        }
+        return [
+            'available' => true,
+            'total_jobs' => $total,
+            'completed_jobs' => $completed,
+            'active_jobs' => $active,
+            'efficiency' => $total === 0 ? null : round($completed / $total, 4),
+            'productivity' => $total === 0 ? null : round(($completed + $active) / $total, 4),
+            'measured_at' => gmdate(DATE_ATOM),
+        ];
     }
 
     public function suggestImprovements(string $area): array

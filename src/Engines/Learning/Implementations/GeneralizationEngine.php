@@ -18,7 +18,11 @@ class GeneralizationEngine implements GeneralizationEngineInterface
         $rules = [];
         foreach ($keys as $key) {
             $values = array_map(static fn(array $example): mixed => $example[$key] ?? null, $examples);
-            $unique = array_values(array_unique($values, SORT_REGULAR));
+            $byFingerprint = [];
+            foreach ($values as $value) {
+                $byFingerprint[json_encode($value, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES)] = $value;
+            }
+            $unique = array_values($byFingerprint);
             if (count($unique) === 1) {
                 $rules[$key] = ['operator' => 'equals', 'value' => $unique[0]];
                 continue;

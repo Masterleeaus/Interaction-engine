@@ -9,11 +9,11 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test tests/ts/*.test.js",
-    "verify": "npm test"
+    "test": "npm run build && node --test --experimental-test-coverage tests/ts/*.test.js",
+    "verify": "npm test",
+    "benchmark:offline": "npm run build && node benchmarks/offline-benchmark.js"
   },
   "devDependencies": {
-    "typescript": "^5.7.0"
+    "typescript": "7.0.2"
   }
 }
-

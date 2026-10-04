@@ -13,13 +13,17 @@ class PolicyEngine implements PolicyEngineInterface
     public function evaluate(string $action, array $context): bool
     {
         $this->violations = [];
+        if ($this->policies === []) {
+            $this->violations[] = 'no_policy_registered';
+            return false;
+        }
+
         foreach ($this->policies as $name => $policy) {
             if (!$policy($action, $context)) {
                 $this->violations[] = $name;
-                return false;
             }
         }
-        return true;
+        return $this->violations === [];
     }
 
     public function getViolations(string $action, array $context): array
@@ -30,6 +34,9 @@ class PolicyEngine implements PolicyEngineInterface
 
     public function addPolicy(string $name, callable $policy): void
     {
+        if (trim($name) === '') {
+            throw new \InvalidArgumentException('Policy name is required.');
+        }
         $this->policies[$name] = $policy;
     }
 

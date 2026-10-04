@@ -15,14 +15,17 @@ $secret = 'interaction-policy-eval-secret-2026';
 spl_autoload_register(static function (string $class) use ($root): void {
     $prefixes = [
         'TitanZero\\Engines\\' => $root . '/src/Engines/',
-        'TitanZero\\Interaction\\' => $root . '/src/',
+        'TitanZero\\Interaction\\' => [$root . '/packages/policy-engine/src/', $root . '/src/'],
     ];
     foreach ($prefixes as $prefix => $base) {
         if (str_starts_with($class, $prefix)) {
             $relative = substr($class, strlen($prefix));
-            $path = $base . str_replace('\\', '/', $relative) . '.php';
-            if (is_file($path)) {
-                require_once $path;
+            foreach ((array) $base as $directory) {
+                $path = $directory . str_replace('\\', '/', $relative) . '.php';
+                if (is_file($path)) {
+                    require_once $path;
+                    return;
+                }
             }
             return;
         }
@@ -109,11 +112,13 @@ foreach ($scenarioDocument['cases'] as $case) {
                 ? max((int) ($case['approval_ttl_seconds'] ?? 900) + 1, (int) ($approvalCase['issue_ttl_seconds'] ?? 901))
                 : (int) ($approvalCase['issue_ttl_seconds'] ?? 300);
 
-            $approval = $signer->issue(
+            $approvedBy = (string) ($approvalCase['approved_by'] ?? 'manager-1');
+            $approval = $signer->issueForPayload(
                 capability: $approvalCapability,
                 tenantId: $approvalTenant,
-                approvedBy: (string) ($approvalCase['approved_by'] ?? 'manager-1'),
+                approvedBy: trim($approvedBy) === '' ? 'evaluation-placeholder' : $approvedBy,
                 approverRoles: (array) ($approvalCase['roles'] ?? ['manager']),
+                payload: $payload,
                 ttlSeconds: $approvalTtl,
             );
 
@@ -122,6 +127,9 @@ foreach ($scenarioDocument['cases'] as $case) {
                 $approval = $signGrant($approval);
             } elseif ($mode === 'tampered') {
                 $approval['approver_roles'] = ['owner'];
+            } elseif (trim($approvedBy) === '') {
+                $approval['approved_by'] = '';
+                $approval = $signGrant($approval);
             }
 
             $payload['_approval'] = $approval;

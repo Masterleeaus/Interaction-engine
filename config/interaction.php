@@ -35,7 +35,7 @@ return [
     ],
 
     'authority' => [
-        'approval_secret' => env('INTERACTION_APPROVAL_SECRET', env('APP_KEY', 'change-this-approval-secret')),
+        'approval_secret' => env('INTERACTION_APPROVAL_SECRET', env('APP_KEY', '')),
         'fresh_authentication_seconds' => (int) env('INTERACTION_FRESH_AUTH_SECONDS', 300),
         'default_deny' => true,
     ],

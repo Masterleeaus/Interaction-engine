@@ -19,15 +19,20 @@ class OpenAIService implements AIServiceInterface
 
     public function generate(string $prompt, array $options = []): string
     {
-        $response = $this->client->chat()->create([
+        $request = [
             'model' => $this->model,
             'messages' => [
-                ['role' => 'system', 'content' => 'You are a helpful assistant that answers questions concisely.'],
+                ['role' => 'system', 'content' => $options['system_prompt'] ?? 'You are a helpful assistant that answers questions concisely.'],
                 ['role' => 'user', 'content' => $prompt],
             ],
             'max_tokens' => $options['max_tokens'] ?? 150,
             'temperature' => $options['temperature'] ?? 0.3,
-        ]);
+        ];
+        if (isset($options['response_format']) && is_array($options['response_format'])) {
+            $request['response_format'] = $options['response_format'];
+        }
+
+        $response = $this->client->chat()->create($request);
 
         return $response->choices[0]->message->content ?? '';
     }
