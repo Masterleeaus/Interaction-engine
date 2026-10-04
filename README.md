@@ -76,7 +76,7 @@ The repository contains 80 engine contracts with matching implementations across
 
 ## Template discovery
 
-The catalogue has 38 definitions: 29 ready templates and nine drafts. Ready templates reference registered entry wizards and declared capabilities; drafts remain non-executable. The authenticated Laravel catalogue is available at `GET /templates`.
+The catalogue has 38 definitions: 29 ready templates and nine drafts. Ready templates reference registered entry wizards and declared capabilities; drafts remain non-executable. The authenticated Laravel catalogue is available at `GET  /templates`.
 
 The [Commerce and multi-vertical template pack](docs/COMMERCE_MULTI_VERTICAL_TEMPLATE_PACK.md) covers ordering, fulfilment, inventory, returns, refunds, and vertical-specific service workflows. Incident Response and inspection corrective action are included in the assurance workflows. Host compatibility evidence is in [`reports/workcore-compatibility.json`](reports/workcore-compatibility.json); it does not claim a connected production host.
 
