@@ -109,6 +109,7 @@ The host business system remains the authority for operational mutations.
 - `resources/openapi.yaml` — API contract
 - `tests/` — runtime and workflow checks
 - `docs/`, `reports/` — architecture and verification evidence
+- [`docs/ENGINE_IMPLEMENTATION_AUDIT.md`](docs/ENGINE_IMPLEMENTATION_AUDIT.md) — source-backed scope of the 80 engine pairs and the six documented no-op methods
 
 The AI and agent-oriented implementation map is in [`docs/AI_ENGINEERING.md`](docs/AI_ENGINEERING.md). It distinguishes deterministic heuristics, optional cloud-model integration, policy enforcement and host-boundary work from claims the repository does not make.
 

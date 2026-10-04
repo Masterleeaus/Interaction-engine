@@ -87,6 +87,112 @@ $test('all 80 engine pairs exist and implement their contracts', function () use
 });
 
 
+
+$test('80-engine audit documents no-op methods and rejects new placeholders', function () use ($root, $assert): void {
+    $expectedNoOps = [
+        'src/Engines/BusinessIntelligence/Implementations/AutomationEngine.php::trigger',
+        'src/Engines/BusinessIntelligence/Implementations/BusinessBuilderEngine.php::launch',
+        'src/Engines/Learning/Implementations/LearningEngine.php::retrain',
+        'src/Engines/Memory/Implementations/EpisodicMemoryEngine.php::consolidate',
+        'src/Engines/Memory/Implementations/SemanticMemoryEngine.php::consolidate',
+        'src/Engines/Planning/Implementations/RetryEngine.php::retryWithBackoff',
+    ];
+
+    $emptyPublicMethods = static function (string $source): array {
+        $tokens = token_get_all($source);
+        $empty = [];
+        $count = count($tokens);
+
+        for ($i = 0; $i < $count; $i++) {
+            if (!is_array($tokens[$i]) || $tokens[$i][0] !== T_PUBLIC) {
+                continue;
+            }
+
+            $cursor = $i + 1;
+            while ($cursor < $count && is_array($tokens[$cursor]) && in_array($tokens[$cursor][0], [T_WHITESPACE, T_STATIC], true)) {
+                $cursor++;
+            }
+            if ($cursor >= $count || !is_array($tokens[$cursor]) || $tokens[$cursor][0] !== T_FUNCTION) {
+                continue;
+            }
+
+            $cursor++;
+            while ($cursor < $count && is_array($tokens[$cursor]) && $tokens[$cursor][0] === T_WHITESPACE) {
+                $cursor++;
+            }
+            if ($cursor < $count && $tokens[$cursor] === '&') {
+                $cursor++;
+            }
+            while ($cursor < $count && is_array($tokens[$cursor]) && $tokens[$cursor][0] === T_WHITESPACE) {
+                $cursor++;
+            }
+            if ($cursor >= $count || !is_array($tokens[$cursor]) || $tokens[$cursor][0] !== T_STRING) {
+                continue;
+            }
+            $name = $tokens[$cursor][1];
+
+            while ($cursor < $count && $tokens[$cursor] !== '{') {
+                $cursor++;
+            }
+            if ($cursor >= $count) {
+                continue;
+            }
+
+            $depth = 1;
+            $body = [];
+            for ($cursor++; $cursor < $count && $depth > 0; $cursor++) {
+                $token = $tokens[$cursor];
+                if ($token === '{') {
+                    $depth++;
+                } elseif ($token === '}') {
+                    $depth--;
+                }
+                if ($depth > 0) {
+                    $body[] = $token;
+                }
+            }
+
+            $hasCode = false;
+            foreach ($body as $token) {
+                if (is_array($token)) {
+                    if (!in_array($token[0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
+                        $hasCode = true;
+                        break;
+                    }
+                } elseif (trim($token) !== '') {
+                    $hasCode = true;
+                    break;
+                }
+            }
+            if (!$hasCode && $name !== '__construct') {
+                $empty[] = $name;
+            }
+            $i = $cursor;
+        }
+
+        return $empty;
+    };
+
+    $actualNoOps = [];
+    $markerFiles = [];
+    foreach (glob($root . '/src/Engines/*/Implementations/*.php') ?: [] as $file) {
+        $relative = str_replace('\\', '/', substr($file, strlen($root) + 1));
+        $source = (string) file_get_contents($file);
+        if (preg_match('/\b(?:TODO|FIXME|not implemented|placeholder|stub)\b/i', $source) === 1) {
+            $markerFiles[] = $relative;
+        }
+        foreach ($emptyPublicMethods($source) as $method) {
+            $actualNoOps[] = $relative . '::' . $method;
+        }
+    }
+
+    sort($actualNoOps);
+    sort($expectedNoOps);
+    sort($markerFiles);
+    $assert($actualNoOps === $expectedNoOps, 'Unexpected no-op engine methods: ' . implode(', ', array_diff($actualNoOps, $expectedNoOps)));
+    $assert($markerFiles === [], 'Placeholder markers found in engine implementations: ' . implode(', ', $markerFiles));
+});
+
 $test('all JSON resources are valid and the five foundation wizards load', function () use ($root, $assert): void {
     $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
     foreach ($iterator as $file) {
