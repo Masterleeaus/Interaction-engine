@@ -52,7 +52,7 @@ class ResponseGenerationEngine implements ResponseGenerationEngineInterface
                 }
                 $value = $value[$segment];
             }
-            return is_scalar($value) ? (string) $value : json_encode($value, JSON_UNESCAPED_SLASHES) ?: '';
+            return is_scalar($value) ? (string) $value : (json_encode($value, JSON_UNESCAPED_SLASHES) ?: '');
         }, $template) ?? $template;
     }
 

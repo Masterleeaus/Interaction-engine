@@ -376,6 +376,12 @@ $test('critical engine implementations perform deterministic work', function () 
     $extractor = new TitanZero\Engines\Memory\Implementations\KnowledgeExtractionEngine();
     $facts = $extractor->extractFacts('A quote requires a customer. A job has a schedule.');
     $assert(count($facts) >= 2, 'Knowledge extraction failed');
+
+    $responses = new TitanZero\Engines\HumanInteraction\Implementations\ResponseGenerationEngine();
+    $rendered = $responses->generateWithTemplate('Hi {{customer.name}}: {{count}} {{items}}', [
+        'customer' => ['name' => 'Jenny'], 'count' => 0, 'items' => ['quote', 'job'],
+    ]);
+    $assert($rendered === 'Hi Jenny: 0 ["quote","job"]', 'Response templates should resolve nested paths and preserve scalar/JSON values.');
 });
 
 
