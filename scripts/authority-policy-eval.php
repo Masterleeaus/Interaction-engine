@@ -7,7 +7,7 @@ use TitanZero\Interaction\Authority\AuthorityLevel;
 use TitanZero\Interaction\Authority\CapabilityPolicy;
 use TitanZero\Interaction\Policy\PolicyEngine;
 
-$root = dirname(__DIR__, 2);
+$root = dirname(__DIR__);
 $scenarioPath = $root . '/evaluations/authority-policy/scenarios.json';
 $scenarioDocument = json_decode((string) file_get_contents($scenarioPath), true, 512, JSON_THROW_ON_ERROR);
 $secret = 'interaction-policy-eval-secret-2026';
