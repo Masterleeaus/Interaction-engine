@@ -1,0 +1,48 @@
+name: Authority Policy Evaluation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/Authority/**'
+      - 'src/Policy/**'
+      - 'evaluations/authority-policy/**'
+      - 'scripts/authority-policy-eval.php'
+      - '.github/workflows/authority-policy-eval.yml'
+  pull_request:
+    paths:
+      - 'src/Authority/**'
+      - 'src/Policy/**'
+      - 'evaluations/authority-policy/**'
+      - 'scripts/authority-policy-eval.php'
+      - '.github/workflows/authority-policy-eval.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  authority-policy-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Run deterministic authority policy evaluation
+        run: php scripts/authority-policy-eval.php
+
+      - name: Upload evaluation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: authority-policy-eval-${{ github.sha }}
+          path: |
+            eval-results/authority-policy-latest.json
+            eval-results/authority-policy-latest.md
+          if-no-files-found: warn
