@@ -1,0 +1,597 @@
+{
+  "title": "Interaction Engine authority-policy gate",
+  "seed": 20261004,
+  "baseline": {
+    "name": "allow-all bypass",
+    "behavior": "Always allows the command and does not consult PolicyEngine; illustrative control only."
+  },
+  "cases": [
+    {
+      "id": "human_owner_fresh_allowed",
+      "category": "user-only",
+      "capability": "finance.payment.approve",
+      "authority": "user_only",
+      "expected_allowed": true,
+      "required_roles": [
+        "owner"
+      ],
+      "fresh_authentication_seconds": 300,
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-1",
+        "roles": [
+          "owner"
+        ]
+      },
+      "authentication_age_seconds": 30
+    },
+    {
+      "id": "human_any_required_role_allowed",
+      "category": "user-only",
+      "capability": "finance.payment.approve",
+      "authority": "user_only",
+      "expected_allowed": true,
+      "required_roles": [
+        "owner",
+        "manager"
+      ],
+      "fresh_authentication_seconds": 300,
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-2",
+        "roles": [
+          "manager"
+        ]
+      },
+      "authentication_age_seconds": 30
+    },
+    {
+      "id": "valid_scoped_approval_allowed",
+      "category": "approval",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": true,
+      "required_roles": [
+        "manager"
+      ],
+      "approval_ttl_seconds": 600,
+      "context": {
+        "actor_type": "agent",
+        "user_id": "agent-1",
+        "tenant_id": "tenant-a"
+      },
+      "approval": {
+        "mode": "valid",
+        "approved_by": "manager-1",
+        "roles": [
+          "manager"
+        ],
+        "issue_ttl_seconds": 300
+      }
+    },
+    {
+      "id": "delegated_agent_at_limit_allowed",
+      "category": "delegation",
+      "capability": "finance.refund.create",
+      "authority": "delegated_autonomous",
+      "expected_allowed": true,
+      "delegated_scopes": [
+        "refunds:create"
+      ],
+      "numeric_limits": {
+        "amount": 100
+      },
+      "context": {
+        "actor_type": "agent",
+        "delegated_scopes": [
+          "refunds:create"
+        ]
+      },
+      "payload": {
+        "amount": 100
+      }
+    },
+    {
+      "id": "delegated_agent_with_all_scopes_allowed",
+      "category": "delegation",
+      "capability": "jobs.assign",
+      "authority": "delegated_autonomous",
+      "expected_allowed": true,
+      "delegated_scopes": [
+        "jobs:assign",
+        "region:au"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "delegated_scopes": [
+          "jobs:assign",
+          "region:au"
+        ]
+      },
+      "payload": {
+        "job_id": "job-1"
+      }
+    },
+    {
+      "id": "human_can_perform_delegated_capability",
+      "category": "delegation",
+      "capability": "jobs.assign",
+      "authority": "delegated_autonomous",
+      "expected_allowed": true,
+      "delegated_scopes": [
+        "jobs:assign"
+      ],
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-3",
+        "delegated_scopes": []
+      },
+      "payload": {
+        "job_id": "job-2"
+      }
+    },
+    {
+      "id": "additional_policy_explicit_allow",
+      "category": "policy-callback",
+      "capability": "jobs.complete",
+      "authority": "delegated_autonomous",
+      "expected_allowed": true,
+      "delegated_scopes": [
+        "jobs:complete"
+      ],
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-4"
+      },
+      "custom_policy": {
+        "type": "allow"
+      }
+    },
+    {
+      "id": "unknown_capability_denied",
+      "category": "fail-closed",
+      "capability": "unknown.execute",
+      "registered": false,
+      "expected_allowed": false,
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-1",
+        "roles": [
+          "owner"
+        ]
+      }
+    },
+    {
+      "id": "observe_only_denied",
+      "category": "authority-level",
+      "capability": "customer.read",
+      "authority": "observe_only",
+      "expected_allowed": false,
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-1"
+      }
+    },
+    {
+      "id": "recommend_only_denied",
+      "category": "authority-level",
+      "capability": "quotes.suggest",
+      "authority": "recommend_only",
+      "expected_allowed": false,
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-1"
+      }
+    },
+    {
+      "id": "prepare_only_denied",
+      "category": "authority-level",
+      "capability": "jobs.prepare",
+      "authority": "prepare_only",
+      "expected_allowed": false,
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-1"
+      }
+    },
+    {
+      "id": "agent_cannot_use_user_only_action",
+      "category": "user-only",
+      "capability": "finance.payment.approve",
+      "authority": "user_only",
+      "expected_allowed": false,
+      "required_roles": [
+        "owner"
+      ],
+      "fresh_authentication_seconds": 300,
+      "context": {
+        "actor_type": "agent",
+        "user_id": "agent-1",
+        "roles": [
+          "owner"
+        ]
+      },
+      "authentication_age_seconds": 10
+    },
+    {
+      "id": "human_without_user_id_denied",
+      "category": "user-only",
+      "capability": "finance.payment.approve",
+      "authority": "user_only",
+      "expected_allowed": false,
+      "required_roles": [
+        "owner"
+      ],
+      "context": {
+        "actor_type": "human",
+        "roles": [
+          "owner"
+        ]
+      },
+      "authentication_age_seconds": 10
+    },
+    {
+      "id": "human_without_required_role_denied",
+      "category": "user-only",
+      "capability": "finance.payment.approve",
+      "authority": "user_only",
+      "expected_allowed": false,
+      "required_roles": [
+        "owner"
+      ],
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-5",
+        "roles": [
+          "staff"
+        ]
+      },
+      "authentication_age_seconds": 10
+    },
+    {
+      "id": "stale_human_authentication_denied",
+      "category": "user-only",
+      "capability": "finance.payment.approve",
+      "authority": "user_only",
+      "expected_allowed": false,
+      "required_roles": [
+        "owner"
+      ],
+      "fresh_authentication_seconds": 300,
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-6",
+        "roles": [
+          "owner"
+        ]
+      },
+      "authentication_age_seconds": 301
+    },
+    {
+      "id": "approval_without_signer_denied",
+      "category": "approval",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": false,
+      "required_roles": [
+        "manager"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "tenant_id": "tenant-a"
+      },
+      "signer_enabled": false,
+      "approval": {
+        "mode": "missing"
+      }
+    },
+    {
+      "id": "approval_missing_denied",
+      "category": "approval",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": false,
+      "required_roles": [
+        "manager"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "tenant_id": "tenant-a"
+      },
+      "approval": {
+        "mode": "missing"
+      }
+    },
+    {
+      "id": "tampered_approval_signature_denied",
+      "category": "approval",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": false,
+      "required_roles": [
+        "manager"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "tenant_id": "tenant-a"
+      },
+      "approval": {
+        "mode": "tampered",
+        "approved_by": "manager-1",
+        "roles": [
+          "manager"
+        ],
+        "issue_ttl_seconds": 300
+      }
+    },
+    {
+      "id": "approval_for_other_capability_denied",
+      "category": "approval",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": false,
+      "required_roles": [
+        "manager"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "tenant_id": "tenant-a"
+      },
+      "approval": {
+        "mode": "wrong_capability",
+        "approved_by": "manager-1",
+        "roles": [
+          "manager"
+        ],
+        "issue_ttl_seconds": 300
+      }
+    },
+    {
+      "id": "cross_tenant_approval_denied",
+      "category": "tenant-boundary",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": false,
+      "required_roles": [
+        "manager"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "tenant_id": "tenant-a"
+      },
+      "approval": {
+        "mode": "wrong_tenant",
+        "approved_by": "manager-1",
+        "roles": [
+          "manager"
+        ],
+        "issue_ttl_seconds": 300
+      }
+    },
+    {
+      "id": "expired_approval_denied",
+      "category": "approval",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": false,
+      "required_roles": [
+        "manager"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "tenant_id": "tenant-a"
+      },
+      "approval": {
+        "mode": "expired",
+        "approved_by": "manager-1",
+        "roles": [
+          "manager"
+        ],
+        "issue_ttl_seconds": 300
+      }
+    },
+    {
+      "id": "approval_over_policy_ttl_denied",
+      "category": "approval",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": false,
+      "required_roles": [
+        "manager"
+      ],
+      "approval_ttl_seconds": 600,
+      "context": {
+        "actor_type": "agent",
+        "tenant_id": "tenant-a"
+      },
+      "approval": {
+        "mode": "over_ttl",
+        "approved_by": "manager-1",
+        "roles": [
+          "manager"
+        ],
+        "issue_ttl_seconds": 900
+      }
+    },
+    {
+      "id": "approval_without_required_approver_role_denied",
+      "category": "approval",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": false,
+      "required_roles": [
+        "manager"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "tenant_id": "tenant-a"
+      },
+      "approval": {
+        "mode": "valid",
+        "approved_by": "staff-1",
+        "roles": [
+          "staff"
+        ],
+        "issue_ttl_seconds": 300
+      }
+    },
+    {
+      "id": "approval_without_approver_identity_denied",
+      "category": "approval",
+      "capability": "quotes.create",
+      "authority": "approval_required",
+      "expected_allowed": false,
+      "required_roles": [
+        "manager"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "tenant_id": "tenant-a"
+      },
+      "approval": {
+        "mode": "valid",
+        "approved_by": "",
+        "roles": [
+          "manager"
+        ],
+        "issue_ttl_seconds": 300
+      }
+    },
+    {
+      "id": "delegated_agent_missing_scope_denied",
+      "category": "delegation",
+      "capability": "finance.refund.create",
+      "authority": "delegated_autonomous",
+      "expected_allowed": false,
+      "delegated_scopes": [
+        "refunds:create",
+        "region:au"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "delegated_scopes": [
+          "refunds:create"
+        ]
+      },
+      "payload": {
+        "amount": 10
+      }
+    },
+    {
+      "id": "delegated_agent_wrong_scope_denied",
+      "category": "delegation",
+      "capability": "finance.refund.create",
+      "authority": "delegated_autonomous",
+      "expected_allowed": false,
+      "delegated_scopes": [
+        "refunds:create"
+      ],
+      "context": {
+        "actor_type": "agent",
+        "delegated_scopes": [
+          "refunds:read"
+        ]
+      },
+      "payload": {
+        "amount": 10
+      }
+    },
+    {
+      "id": "delegated_amount_over_limit_denied",
+      "category": "delegation",
+      "capability": "finance.refund.create",
+      "authority": "delegated_autonomous",
+      "expected_allowed": false,
+      "delegated_scopes": [
+        "refunds:create"
+      ],
+      "numeric_limits": {
+        "amount": 100
+      },
+      "context": {
+        "actor_type": "agent",
+        "delegated_scopes": [
+          "refunds:create"
+        ]
+      },
+      "payload": {
+        "amount": 150
+      }
+    },
+    {
+      "id": "delegated_amount_just_over_limit_denied",
+      "category": "delegation",
+      "capability": "finance.refund.create",
+      "authority": "delegated_autonomous",
+      "expected_allowed": false,
+      "delegated_scopes": [
+        "refunds:create"
+      ],
+      "numeric_limits": {
+        "amount": 100
+      },
+      "context": {
+        "actor_type": "agent",
+        "delegated_scopes": [
+          "refunds:create"
+        ]
+      },
+      "payload": {
+        "amount": 100.01
+      }
+    },
+    {
+      "id": "custom_policy_reason_denies",
+      "category": "policy-callback",
+      "capability": "jobs.complete",
+      "authority": "delegated_autonomous",
+      "expected_allowed": false,
+      "delegated_scopes": [
+        "jobs:complete"
+      ],
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-4"
+      },
+      "custom_policy": {
+        "type": "reason",
+        "value": "Job is not ready."
+      }
+    },
+    {
+      "id": "custom_policy_false_denies",
+      "category": "policy-callback",
+      "capability": "jobs.complete",
+      "authority": "delegated_autonomous",
+      "expected_allowed": false,
+      "delegated_scopes": [
+        "jobs:complete"
+      ],
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-4"
+      },
+      "custom_policy": {
+        "type": "false"
+      }
+    },
+    {
+      "id": "custom_policy_structured_denial",
+      "category": "policy-callback",
+      "capability": "jobs.complete",
+      "authority": "delegated_autonomous",
+      "expected_allowed": false,
+      "delegated_scopes": [
+        "jobs:complete"
+      ],
+      "context": {
+        "actor_type": "human",
+        "user_id": "user-4"
+      },
+      "custom_policy": {
+        "type": "structured_denial",
+        "value": "Approval required by the connected host."
+      }
+    }
+  ]
+}
