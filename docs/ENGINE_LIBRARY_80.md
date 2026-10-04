@@ -2,6 +2,8 @@
 
 Integrated into the Interaction Engine cumulative package.
 
+The 80-item count is structural library coverage: each named contract has a registered implementation, but it is not a completeness or machine-learning claim. Six public methods remain no-op scaffolds and are documented in [the implementation audit](ENGINE_IMPLEMENTATION_AUDIT.md).
+
 ## Executive
 
 01. `ExecutiveEngine`

@@ -38,7 +38,11 @@ An intent or prediction never becomes permission by itself.
 | Optional cloud AI | `src/AI/OpenAIService.php`, `src/Resolver/Resolvers/AIResolver.php` | Optional OpenAI-backed question resolution when enabled and configured. `NullAIService` fails closed when cloud AI is disabled. Cloud output does not bypass policy or command dispatch. |
 | Authority and safety | `src/Policy/PolicyEngine.php`, `src/Authority/*`, `src/Command/CommandBus.php` | Default-deny capability decisions, approval signatures, role/scope/limit checks, tenant checks and policy callbacks before execution. |
 | Evidence lineage | `src/Cognition/*`, `src/Events/*`, `src/Http/Controllers/CognitiveEventController.php` | Tenant-scoped cognitive events and outcome links for audit and later learning. |
-| Agent-oriented building blocks | `src/Engines/{Planning,Executive,Cognitive,Memory,Learning}/*` | Contract-driven deterministic planning, routing, decision, memory and learning primitives. The 80-engine library is a replaceable baseline library, not 80 trained agents or models. |
+| Agent-oriented building blocks | `src/Engines/{Planning,Executive,Cognitive,Memory,Learning}/*` | Contract-driven deterministic planning, routing, decision, memory and learning primitives. Six public methods remain explicit no-op scaffolds and are listed in [the implementation audit](ENGINE_IMPLEMENTATION_AUDIT.md); the library is a replaceable baseline, not 80 trained agents or models. |
+
+## 80-engine implementation scope
+
+The repository contains 80 contract/implementation pairs, and the verifier checks that one-to-one structural relationship. That count is not a claim that every method has a complete side effect: six public methods are intentionally recorded as no-op scaffolds in [the implementation audit](ENGINE_IMPLEMENTATION_AUDIT.md). The audit also distinguishes an empty dependency-injection constructor from an empty behavioural method.
 
 ## Engineering tradeoffs
 
