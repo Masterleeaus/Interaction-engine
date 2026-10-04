@@ -1,4 +1,4 @@
-![Titan Interaction Runtime — GOVERNED WORKFLOWS · ONLINE + OFFLINE](docs/images/portfolio-banner.svg)
+![Titan Interaction Runtime — GOVERNED WORKFLOWS · ONLINE + OFFLINE](docs/images/interaction-engine-banner.svg)
 
 <div align="center">
 
@@ -44,6 +44,10 @@ Assurance workflows include **Incident Response** and inspection corrective acti
 The [Commerce and multi-vertical template pack](docs/COMMERCE_MULTI_VERTICAL_TEMPLATE_PACK.md) adds reusable workflows for ordering, fulfilment, inventory, returns, refunds, and vertical-specific service operations. See `reports/workcore-compatibility.json` for engine readiness and host-connection status.
 
 ## Architecture
+
+<p align="center">
+  <img src="docs/images/interaction-engine-architecture.svg" alt="Interaction Engine dataflow from chat, voice, mobile, desktop, and API surfaces through runtime, wizards, local intelligence, policy, online host, and offline outbox" width="100%" />
+</p>
 
 ```text
 Chat / Voice / Mobile / Desktop / API
